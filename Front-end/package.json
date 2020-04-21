@@ -1,0 +1,30 @@
+{
+  "name": "nextjs",
+  "version": "4.0.0",
+  "private": true,
+  "dependencies": {
+    "@material-ui/core": "^4.9.9",
+    "@material-ui/icons": "^4.9.1",
+    "@material-ui/lab": "^4.0.0-alpha.48",
+    "@material-ui/styles": "latest",
+    "axios": "^0.19.0",
+    "clsx": "latest",
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^0.20.0",
+    "lodash": "^4.17.15",
+    "next": "latest",
+    "next-images": "^1.4.0",
+    "prop-types": "latest",
+    "query-string": "^6.12.0",
+    "react": "latest",
+    "react-custom-scrollbars": "^4.2.1",
+    "react-dom": "latest",
+    "react-router": "^5.1.2",
+    "react-router-dom": "^5.1.2"
+  },
+  "scripts": {
+    "dev": "node server.js",
+    "build": "next build",
+    "start": "cross-env NODE_ENV=production node server.js"
+  }
+}
