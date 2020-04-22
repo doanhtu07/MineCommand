@@ -519,7 +519,7 @@ export default function Layout(props) {
                             !_.isEmpty(user) &&
                             <div>
                                 <Avatar 
-                                    src="" 
+                                    src={user.avatarUrl} 
                                     className={classes.avatar}
                                     onClick={handleClickAvatar}
                                 >

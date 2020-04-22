@@ -17,6 +17,7 @@
     "prop-types": "latest",
     "query-string": "^6.12.0",
     "react": "latest",
+    "react-avatar-editor": "^12.0.0-beta.0",
     "react-custom-scrollbars": "^4.2.1",
     "react-dom": "latest",
     "react-router": "^5.1.2",

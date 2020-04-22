@@ -10,7 +10,8 @@ const useStyles = makeStyles(theme => ({
     gridItems: {
         display: 'flex',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        padding: 4
     },
     smallImages: {
         height: 135,
