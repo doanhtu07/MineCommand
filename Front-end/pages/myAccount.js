@@ -1,4 +1,4 @@
-import React, { Component, createContext } from 'react';
+import React from 'react';
 import _ from 'lodash';
 import axios from 'axios';
 import Router from 'next/router';
