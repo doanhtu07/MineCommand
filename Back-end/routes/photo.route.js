@@ -67,64 +67,106 @@ router.delete('/deletePhotosOfUser', (req, res) => {
     })
     .catch(err => {
         console.log(err);
+        res.status(500).send("Action too fast!");
     })
 });
 
 router.post('/uploadPhoto', (req, res) => {
-    var newPhoto = req.files[0];
     var userID = req.body.userID;
 
     if(req.files.length===0)
         return [null, null];
 
-    prisma.photo.create({
-        data: {
-          user: {
-            connect: { id: userID }
-          },
-        },
-    })
-    .then(photo => {
-        var metadata = {
-            contentType: newPhoto.mimetype,
-        };
-
-        // Upload the file and metadata
-        return Promise.all([
-            photo, 
-            storage.child(`images/${userID}/${photo.id}`).put(newPhoto.buffer, metadata)
-        ]);
-    })
-    .then(([photo, fileRef]) => {
-        if(!photo) return [null, null];
-
-        return Promise.all([
-            photo, 
-            storage.child(fileRef.metadata.fullPath).getDownloadURL()
-        ]);
-    })
-    .then(([photo, url]) => {
-        if(!photo) return null;
-
-        const date = new Date();
-
-        return prisma.photo.update({
-            where: {
-                id: photo.id
-            },
-            data: {
-                uploadedAt: date,
-                url,
-            }
-        });
-    })
-    .then(photoUpdate => {
-        res.send(photoUpdate);
+    const uploadedPhotoPromise = req.files.map(
+        file => new Promise((resolve, reject) => {
+            prisma.photo.create({
+                data: {
+                  user: {
+                    connect: { id: userID }
+                  },
+                },
+            })
+            .then(photo => {
+                var metadata = {
+                    contentType: file.mimetype,
+                };
+        
+                // Upload the file and metadata
+                return Promise.all([
+                    photo, 
+                    storage.child(`images/${userID}/${photo.id}`).put(file.buffer, metadata)
+                ]);
+            })
+            .then(([photo, fileRef]) => {
+                if(!photo) return [null, null];
+        
+                return Promise.all([
+                    photo, 
+                    storage.child(fileRef.metadata.fullPath).getDownloadURL()
+                ]);
+            })
+            .then(([photo, url]) => {
+                if(!photo) return null;
+        
+                const date = new Date();
+        
+                return prisma.photo.update({
+                    where: {
+                        id: photo.id
+                    },
+                    data: {
+                        uploadedAt: date,
+                        url,
+                    }
+                });
+            })
+            .then(photoUpdate => {
+                resolve(photoUpdate);
+            })
+            .catch(err => {
+                console.log(err);
+                reject(err);
+            })
+        })
+    );
+    Promise.all(uploadedPhotoPromise)
+    .then(result => {
+        res.send(result);
     })
     .catch(err => {
         console.log(err);
     })
+});
 
+router.put('/updateAvatar', (req, res) => {
+    const { userId } = req.body;
+    const file = req.files[0];
+
+    var metadata = {
+        contentType: file.mimetype,
+    };
+    storage.child(`avatars/${userId}`).put(file.buffer, metadata)
+    .then(fileRef => {
+        return storage.child(fileRef.metadata.fullPath).getDownloadURL()
+    })
+    .then(photoURL => {
+        const date = new Date();
+        return prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                updatedAt: date,
+                avatarUrl: photoURL
+            }
+        })
+    })
+    .then(result => {
+        res.send(result);
+    })
+    .catch(err => {
+        console.log(err);
+    })
 });
 
 module.exports = router;

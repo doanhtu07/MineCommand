@@ -15,7 +15,7 @@ const facebookStrategy = new FacebookStrategy({
     profileFields: ['id', 'email', 'gender', 'link', 'locale', 'name', 'timezone', 'updated_time', 'verified']
   },
   function(accessToken, refreshToken, profile, done) {
-    const { email, first_name, last_name } = profile._json;
+    const { id, email, first_name, last_name } = profile._json;
     prisma.user.findOne({
         where: {
             email
@@ -31,7 +31,8 @@ const facebookStrategy = new FacebookStrategy({
                 data: {
                     name: `${first_name} ${last_name}`,
                     email,
-                    password: ""
+                    password: "",
+                    avatarUrl: `http://graph.facebook.com/${id}/picture?type=large`
                 }
             })
         }

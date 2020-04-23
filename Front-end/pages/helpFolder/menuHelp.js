@@ -1,8 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
-import MenuIcon from '@material-ui/icons/Menu';
-import Box from '@material-ui/core/Box';
 import Help from './help';
 
 const useStyles = makeStyles(theme => ({

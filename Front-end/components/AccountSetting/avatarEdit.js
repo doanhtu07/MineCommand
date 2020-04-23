@@ -2,20 +2,19 @@ import React from 'react';
 import _ from 'lodash';
 import clsx from 'clsx';
 import axios from 'axios';
-import { fade, withStyles } from '@material-ui/core/styles';
+import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import GridList from '@material-ui/core/GridList';
-import GridListTile from '@material-ui/core/GridListTile';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import Typography from '@material-ui/core/Typography';
 import Backdrop from '@material-ui/core/Backdrop';
 import Paper from '@material-ui/core/Paper';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import Button from '@material-ui/core/Button';
 import EditRoundedIcon from '@material-ui/icons/EditRounded';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import ImageItem from './SmallComponents/ImageItem.js';
+import AvatarCanvas from './SmallComponents/AvatarCanvas';
 import ClearRoundedIcon from '@material-ui/icons/ClearRounded';
 import DoneRoundedIcon from '@material-ui/icons/DoneRounded';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -28,24 +27,26 @@ const styles = theme => ({
     avatar: {
         display: 'flex',
         justifyContent: 'start',
-        flexDirection: 'column',
+        flexDirection: 'row',
         alignItems: 'center',
     },
     image: {
         width: 170,
         height: 170,
         borderRadius: '50%',
+        marginRight: 10
     },
     img: {
         width: '100%',
         height: '100%',
+        borderRadius: '50%'
     },
     backDrop: {
         zIndex: theme.zIndex.drawer + 1,
         color: '#fff',
     },
     avatarBackDrop: {
-        width: 500,
+        width: 460,
         height: 600,
         padding: theme.spacing(0),
     },
@@ -60,7 +61,7 @@ const styles = theme => ({
     },
     imagesContainer: {
         display: 'flex',
-        justifyContent: 'space-evenly',
+        justifyContent: 'flex-start',
         alignItems: 'center',
         height: 180,
         width: '100%',
@@ -75,6 +76,16 @@ const styles = theme => ({
     seeMore: {
         display: 'flex',
         justifyContent: 'flex-end',
+        alignItems: 'center',
+        padding: 5
+    },
+    seeMoreButton: {
+        maxHeight: '30px',
+    },
+    seeMoreLabel: {
+        fontSize: 'smaller',
+        display: 'flex',
+        justifyContent: 'center',
         alignItems: 'center',
     },
     uploadPhoto: {
@@ -94,7 +105,7 @@ const styles = theme => ({
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 5
+        padding: 10
     },  
     smallImages: {
         height: 125,
@@ -119,7 +130,42 @@ class avatarEdit extends React.Component {
             deleteMode: false,
             photos: [],
             totalPhotos: 0,
+            photoEditor: {},
         };
+    }
+
+    photoEditorChange = (editor) => {
+        this.setState({ photoEditor: editor });
+    }
+
+    photoEditorSave = () => {
+        if(!_.isEmpty(this.state.photoEditor)) {
+            const canvas = this.state.photoEditor.getImageScaledToCanvas().toDataURL();
+            fetch(canvas)
+            .then(res => {
+                return res.blob();
+            })
+            .then(blobFile => {
+                const formData = new FormData();
+                formData.append('file', blobFile);
+                formData.append('userId', this.state.user.id);
+
+                const config = {
+                    headers: {
+                        'content-type': 'multipart/form-data'
+                    }
+                };
+
+                return axios.put('/api/photo/updateAvatar', formData, config);
+            })
+            .then(res => {
+                this.context.forceReloadPage();
+                this.props.openSnackBar("success", "avatar");
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
     }
 
     addArraySelectedId = (photoId) => {
@@ -157,9 +203,11 @@ class avatarEdit extends React.Component {
         })
         .then(() => {
             this.getUserPhotos(6);
+            this.props.openSnackBar("success", "photos");
         })
         .catch(err => {
             console.log(err);
+            this.props.openSnackBar("error", "photos");
         })
     }
 
@@ -189,7 +237,11 @@ class avatarEdit extends React.Component {
 
     inputPhoto = (event) => {
         const formData = new FormData();
-        formData.append('file', event.target.files[0]);
+        let count = 0;
+        while(event.target.files[count]) {
+            formData.append(`file[${count}]`, event.target.files[count]);
+            count++;
+        }
         formData.append('userID', this.state.user.id);
         const config = {
             headers: {
@@ -199,11 +251,14 @@ class avatarEdit extends React.Component {
         axios.post('/api/photo/uploadPhoto', formData, config)
         .then(res => {
             let temp = this.state.photos;
-            if(temp.length>=3)
-                temp.pop();
-            temp.unshift(res.data);
+            res.data.map(photo => {
+                if(temp.length>=3)
+                    temp.pop();
+                temp.unshift(photo);
+            });
             this.setState({ photos: temp });   
-            this.getTotalNumberOfPhotos();     
+            this.getTotalNumberOfPhotos();   
+            this.props.openSnackBar("success", "photos");  
         })
         .catch(err => {
             console.log(err);
@@ -294,7 +349,9 @@ class avatarEdit extends React.Component {
                                 <div>
                                     {
                                         this.state.selectedId!=="" && !this.state.deleteMode &&
-                                        <Button>
+                                        <Button
+                                            onClick={this.photoEditorSave}
+                                        >
                                             Save
                                         </Button>
                                     }
@@ -323,17 +380,29 @@ class avatarEdit extends React.Component {
                                 </div>
                             </Grid>
                             {
-                                !this.state.deleteMode &&
+                                !this.state.deleteMode && _.isEmpty(this.state.selectedId) &&
                                 <Grid item xs={12} className={classes.backDropAvatar}>
                                     {
-                                        this.state.user.avatarUrl &&
+                                        this.state.user.avatarUrl && 
+                                        _.isEmpty(this.state.selectedId) &&
+
                                         <img className={classes.image} src={this.state.user.avatarUrl} />
                                     }
                                     {   
-                                        !this.state.user.avatarUrl &&
+                                        !this.state.user.avatarUrl && 
+                                        _.isEmpty(this.state.selectedId) &&
+
                                         <AccountCircleIcon className={classes.image}/>
                                     }
                                 </Grid>
+                            }
+                            {
+                                !this.state.deleteMode && !_.isEmpty(this.state.selectedId) &&
+                                <AvatarCanvas 
+                                    photos={this.state.photos}
+                                    selectedId={this.state.selectedId}
+                                    photoEditorChange={this.photoEditorChange}
+                                />
                             }
                             <Grid item xs={12} className={classes.yourUploadedPhotos}>
                                 <Typography variant="button">
@@ -345,7 +414,7 @@ class avatarEdit extends React.Component {
                             </Grid>
                             <CssBaseline/>
                             <GridList 
-                                cellHeight={180}  
+                                cellHeight={140}  
                                 className={classes.imagesContainer}
                                 cols={3}
                             >
@@ -374,34 +443,44 @@ class avatarEdit extends React.Component {
                                 ))}
                             </GridList>
                             <Grid item xs={12} className={classes.seeMore}>
-                                <Button onClick={this.seeMore}>
+                                <Button onClick={this.seeMore} className={classes.seeMoreButton}
+                                    classes={{
+                                        label: classes.seeMoreLabel
+                                    }}
+                                >
                                     See More
                                 </Button>
                             </Grid>
-                            <Grid item xs={12}>
-                                <input
-                                    accept="image/*"
-                                    className={classes.hide}
-                                    id="upload-file-photo"
-                                    multiple
-                                    type="file"
-                                    onChange={this.inputPhoto}
-                                />
-                                <label htmlFor="upload-file-photo">
-                                    <Button 
-                                        className={classes.uploadPhoto}
-                                        classes={{
-                                            label: classes.uploadPhotoLabel
-                                        }}
-                                        component="span"
-                                    >
-                                        <Typography variant="button">
-                                            Upload your new photo
-                                        </Typography>
-                                        <AddCircleRoundedIcon/>
-                                    </Button>
-                                </label>
+                            {
+                                (
+                                    _.isEmpty(this.state.selectedId) || 
+                                    (!_.isEmpty(this.state.selectedId) && this.state.deleteMode)
+                                ) &&
+                                <Grid item xs={12}>
+                                    <input
+                                        accept="image/*"
+                                        className={classes.hide}
+                                        id="upload-file-photo"
+                                        multiple
+                                        type="file"
+                                        onChange={this.inputPhoto}
+                                    />
+                                    <label htmlFor="upload-file-photo">
+                                        <Button 
+                                            className={classes.uploadPhoto}
+                                            classes={{
+                                                label: classes.uploadPhotoLabel
+                                            }}
+                                            component="span"
+                                        >
+                                            <Typography variant="button">
+                                                Upload your new photos
+                                            </Typography>
+                                            <AddCircleRoundedIcon/>
+                                        </Button>
+                                    </label>
                             </Grid>
+                            }
                         </Grid>
                     </Paper>
                 </Backdrop>

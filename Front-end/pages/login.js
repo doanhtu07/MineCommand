@@ -231,11 +231,3 @@ export default function LogIn() {
         </div>
     );
 }
-
-/*
-const useStyles = makeStyles({
-  root: {
-    flexGrow: 1,
-  },
-});
-*/

@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import axios from 'axios';
 import _ from 'lodash';
 import queryString from 'query-string';
-//import { fade, makeStyles } from '@material-ui/core/styles';
 import { fade, withStyles } from '@material-ui/core/styles';
 import CardPost from '../components/CardPost';
 import Grid from '@material-ui/core/Grid';
@@ -18,51 +17,6 @@ const styles = theme => ({
     display: 'flex',
     justifyContent: 'center',
     flexDirection: 'column'
-  },
-  searchBar: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  startPage: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  search: {
-    position: 'relative',
-    borderRadius: theme.shape.borderRadius,
-    backgroundColor: fade(theme.palette.common.white, 0.15),
-    '&:hover': {
-      backgroundColor: fade(theme.palette.common.white, 0.25),
-    },
-    marginRight: theme.spacing(2),
-    marginLeft: 0,
-    width: '100%',
-    [theme.breakpoints.up('sm')]: {
-      marginLeft: theme.spacing(3),
-      width: 'auto',
-    },
-  },
-  searchIcon: {
-    width: theme.spacing(7),
-    height: '100%',
-    position: 'absolute',
-    pointerEvents: 'none',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  inputRoot: {
-    color: 'inherit',
-  },
-  inputInput: {
-    padding: theme.spacing(1, 1, 1, 7),
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: 200,
-    },
   },
   paper: {
     padding: theme.spacing(2),
@@ -84,21 +38,8 @@ const styles = theme => ({
   smallGrid: {
     maxWidth: 'fit-content',
   },
-  show: {
-    display: 'flex',
-    alignItems: 'center',
-    marginLeft: '8px'
-  },
   arrayCards: {
     marginBottom: '8px'
-  },
-  input: {
-    margin: theme.spacing(1),
-  },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: 200,
   },
   pagination: {
     display: 'flex',

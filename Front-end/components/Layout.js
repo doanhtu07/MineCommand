@@ -42,7 +42,6 @@ import bush from '../public/bush.png';
 import day from '../public/day.png';
 import night from '../public/night.jpg';
 import UserProvider from '../contexts/UserProvider.js';
-import { Scrollbars } from 'react-custom-scrollbars';
 
 const drawerWidth = 240;
 
@@ -519,7 +518,7 @@ export default function Layout(props) {
                             !_.isEmpty(user) &&
                             <div>
                                 <Avatar 
-                                    src="" 
+                                    src={user.avatarUrl} 
                                     className={classes.avatar}
                                     onClick={handleClickAvatar}
                                 >
@@ -538,7 +537,7 @@ export default function Layout(props) {
                                         </ListItemIcon>
                                         <ListItemText primary="My account" />
                                     </StyledMenuItem>
-                                    <StyledMenuItem>
+                                    <StyledMenuItem component={Link} href="/myProfile">
                                         <ListItemIcon>
                                             <AccountBoxRoundedIcon fontSize="small" />
                                         </ListItemIcon>

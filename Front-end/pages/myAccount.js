@@ -1,4 +1,4 @@
-import React, { Component, createContext } from 'react';
+import React from 'react';
 import _ from 'lodash';
 import axios from 'axios';
 import Router from 'next/router';
@@ -50,6 +50,7 @@ class MyAccount extends React.Component {
                 avatarUrl: null,
             },
 
+            alertSeverity: "",
             snackBar: false,
             snackBarTitle: "",
 
@@ -72,8 +73,9 @@ class MyAccount extends React.Component {
     }
 
     //snackbar
-    openSnackBar = (title) => {
+    openSnackBar = (alertSeverity, title) => {
         this.setState({
+            alertSeverity,
             snackBar: true,
             snackBarTitle: title
         });
@@ -126,7 +128,7 @@ class MyAccount extends React.Component {
             .then(res => {
                 this.context.forceReloadPage();
 
-                this.openSnackBar("name");
+                this.openSnackBar("success", "name");
                 this.closeEditName();
             })
             .catch(err => {
@@ -183,7 +185,7 @@ class MyAccount extends React.Component {
             .then(res => {
                 this.context.forceReloadPage();
 
-                this.openSnackBar("password");
+                this.openSnackBar("success", "password");
                 this.closeEditPassword();
             })
             .catch(err => {
@@ -249,6 +251,7 @@ class MyAccount extends React.Component {
                                 hover={this.state.hoverAvatar}
                                 backDrop={this.state.backDropAvatar}
                                 closeBackDrop={this.closeAvatarBackDrop}
+                                openSnackBar={this.openSnackBar}
                             />
                             <Grid item xs={12} container direction="column" spacing={2}>
                                 <Grid className={classes.titleGrid} item xs>
@@ -312,8 +315,19 @@ class MyAccount extends React.Component {
                     open={this.state.snackBar}
                     onClose={this.closeSnackBar}
                 >
-                    <Alert onClose={this.closeSnackBar} severity="success">
-                        Successfully change {this.state.snackBarTitle}
+                    <Alert onClose={this.closeSnackBar} severity={this.state.alertSeverity}>
+                        {
+                            this.state.alertSeverity==="success" &&
+                            <Typography variant="button">
+                                Successfully change {this.state.snackBarTitle}
+                            </Typography>
+                        }
+                        {
+                            this.state.alertSeverity==="error" &&
+                            <Typography variant="button">
+                                Error at {this.state.snackBarTitle}. Please re-enter your current page to reload.
+                            </Typography>
+                        }
                     </Alert>
                 </Snackbar>
             </Grid>
