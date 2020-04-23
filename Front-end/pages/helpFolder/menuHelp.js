@@ -28,7 +28,7 @@ export default function menuHelp() {
                 <Typography className={classes.title}>Menu</Typography>
                 <Typography paragraph>
                     The menu aids you in finding resources on our website faster. There are recently
-                    7 sections in the menu: Home, Challenges, Creations, Search List, About, Contact, Help. 
+                    7 sections in the menu: Home, News, Challenges, Creations, About, Contact, Help. 
                 </Typography>
                 <Typography paragraph>
                     You can freely check those sections out to understand our website better. If you have any troubles

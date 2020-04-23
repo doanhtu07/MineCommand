@@ -40,16 +40,11 @@ export default function Help(props) {
                 Help
             </Typography>
             <Divider/>
-            <Divider/>
             <div className={classes.listHelp}>
                 <Button className={classes.title} color="primary" component={Link} href="/helpFolder/menuHelp">
                     Menu
                 </Button>
-                <Button className={classes.title} color="primary" component={Link} href="/helpFolder/newTagsHelp">
-                    New Tags
-                </Button>
             </div>
-            <Divider/>
             <Divider/>
             {props.children}
         </Paper>
