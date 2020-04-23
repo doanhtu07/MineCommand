@@ -10,6 +10,8 @@ class UserProvider extends React.Component {
         user: {},
     }
 
+    typeLogin = ['facebook', 'google'];
+
     getUser = () => {
         return new Promise((resolve, reject) => {
             axios.get('/api/user')
@@ -60,8 +62,8 @@ class UserProvider extends React.Component {
 
     loginUser = (typeLogin, credentials) => {
         return new Promise((resolve, reject) => {
-            if(typeLogin==='facebook') {
-                window.location = '/api/auth/facebook';
+            if(this.typeLogin.indexOf(typeLogin)>=0) {
+                window.location = `/api/auth/${typeLogin}`;
                 resolve("Successful");
             }
             else {//typeLogin==='local'
@@ -102,11 +104,11 @@ class UserProvider extends React.Component {
                     user: this.state.user,
                     photos: this.state.photos,
                     totalPhotos: this.state.totalPhotos,
+                    getUserPhotos: this.getUserPhotos,
                     logoutUser: this.logoutUser,
                     loginUser: this.loginUser,
                     signupUser: this.signupUser,
                     forceReloadPage: this.forceReloadPage,
-                    getUserPhotos: this.getUserPhotos,
                 }} 
             >
                 {this.props.children}

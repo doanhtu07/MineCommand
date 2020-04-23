@@ -2,6 +2,7 @@ const { PrismaClient } = require('@prisma/client'),
     loginStrategy = require("./strategies/login.strategy"),
     signupStrategy = require("./strategies/signup.strategy"),
     facebookStrategy = require("./strategies/facebook.strategy");
+    googleStrategy = require("./strategies/google.strategy");
 const prisma = new PrismaClient();
 
 const setupPassport = (passport) => {
@@ -26,6 +27,7 @@ const setupPassport = (passport) => {
     passport.use('local-login', loginStrategy);
     passport.use('local-signup', signupStrategy);
     passport.use(facebookStrategy);
+    passport.use(googleStrategy);
 }
 
 module.exports = { setupPassport };

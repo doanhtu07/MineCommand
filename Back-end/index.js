@@ -9,15 +9,12 @@ const {
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const _ = require('lodash');
 const app = express()
     , passport = require('passport')
     , { setupPassport } = require('./passport')
     , session = require("express-session")
-    , fs = require('fs');
 
 const { PrismaClient } = require('@prisma/client')
-    , LocalStrategy = require('passport-local').Strategy;
 const prisma = new PrismaClient();
 const { indices } = require('./algolia');
 
@@ -97,6 +94,14 @@ app.get('/auth/facebook/callback',
     passport.authenticate('facebook', { 
         successRedirect: '/',
         failureRedirect: '/login' 
+    })
+);
+
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+app.get('/auth/google/callback',
+    passport.authenticate('google', {
+        successRedirect: '/',
+        failureRedirect: '/login'
     })
 );
 

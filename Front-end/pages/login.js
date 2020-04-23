@@ -117,10 +117,6 @@ export default function LogIn() {
             });
     };
 
-    const handleFacebook = () => {
-        loginUser('facebook')
-    };
-
     const handleKeyDown = (event) => {
         if(event.key==='Enter')
             handleSubmit();
@@ -208,7 +204,7 @@ export default function LogIn() {
                 </Typography>
                 <div className={classes.images}>
                     <Button 
-                        onClick={handleFacebook}
+                        onClick={() => {loginUser("facebook")}}
                         classes={{
                             root: classes.buttonLabel
                         }}
@@ -218,9 +214,12 @@ export default function LogIn() {
                             className={classes.image}
                         />
                     </Button>
-                    <Button classes={{
-                        root: classes.buttonLabel,
-                    }}>
+                    <Button 
+                        onClick={() => {loginUser("google")}}
+                        classes={{
+                            root: classes.buttonLabel,
+                        }}
+                    >
                         <img 
                             src="/google.png"
                             className={classes.image}
