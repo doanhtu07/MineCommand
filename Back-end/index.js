@@ -21,6 +21,14 @@ const { indices } = require('./algolia');
 var multer = require('multer');
 var upload = multer();
 
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+const fs = require('fs');
+
+const randomKey = require('random-key');
+let passwordVerificationCode = "";
+
 // for parsing multipart/form-data
 app.use(upload.any()); 
 
@@ -191,6 +199,60 @@ app.use('/verification/:tokenId', (req, res) => {
             })
 
         }
+    })
+    .catch(err => {
+        console.log(err);
+    })
+})
+
+//forgot password process
+app.get('/passwordVerification', (req, res) => {
+    passwordVerificationCode = randomKey.generate(6);
+    fs.readFile('./verification/passwordVerification/form.html', 'utf8', (err, data) => {
+        if(err)
+            console.log(err);
+        else {
+            const htmlFile = data.replace("{{ verificationKey }}", passwordVerificationCode);
+            const msg = {
+                to: req.query.email,
+                from: 'customerservice@minecommand.us',
+                subject: 'Verification Code',
+                html: htmlFile,
+            };
+            sgMail.send(msg)
+            .then(() => {
+                res.sendStatus(200);
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        }
+    })
+})
+
+app.get('/checkVerificationCode', (req, res) => {
+    const { code } = req.query;
+    if(code!==passwordVerificationCode) {
+        res.status(404).send("Your verification code does not match.");
+    }
+    else {
+        res.sendStatus(200);
+    }
+})
+
+app.put('/changePassword', (req, res) => {
+    const { password, email } = req.body;
+
+    prisma.user.update({
+        where: {
+            email,
+        },
+        data: {
+            password,
+        }
+    })
+    .then(user => {
+        res.send(user);
     })
     .catch(err => {
         console.log(err);

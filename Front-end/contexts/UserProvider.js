@@ -91,6 +91,47 @@ class UserProvider extends React.Component {
         });
     }
 
+    //Forgot password process
+    sendPasswordVerificationCode = (email) => {
+        axios.get('/api/passwordVerification', {
+            params: {
+                email,
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+    checkVerificationCode = (code) => {
+        return new Promise((resolve, reject) => {
+            axios.get('/api/checkVerificationCode', {
+                params: {
+                    code,
+                }
+            })
+            .then(res => {
+                resolve("Successful");
+            })
+            .catch(err => {
+                reject(err.response.data);
+            })
+        });
+    }
+    changePassword = (password, email) => {
+        return new Promise((resolve, reject) => {
+            axios.put('/api/changePassword', {
+                password,
+                email
+            })
+            .then(res => {
+                resolve(res);
+            })
+            .catch(err => {
+                reject(err);
+            })
+        }); 
+    }
+
     forceReloadPage = () => {
         this.componentDidMount();
     }
@@ -108,6 +149,9 @@ class UserProvider extends React.Component {
                     logoutUser: this.logoutUser,
                     loginUser: this.loginUser,
                     signupUser: this.signupUser,
+                    sendPasswordVerificationCode: this.sendPasswordVerificationCode,
+                    checkVerificationCode: this.checkVerificationCode,
+                    changePassword: this.changePassword,
                     forceReloadPage: this.forceReloadPage,
                 }} 
             >

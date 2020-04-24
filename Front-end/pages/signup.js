@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import axios from 'axios';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import { makeStyles } from '@material-ui/core/styles';
@@ -90,7 +89,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-export default function LogIn() {
+export default function SignUp() {
     const { signupUser } = useContext(UserProvider.context);
 
     const classes = useStyles();
@@ -162,7 +161,7 @@ export default function LogIn() {
                 {
                     error!=="" &&
                     <Typography className={classes.error}>
-                        Error: {error}
+                        Note: {error}
                     </Typography>
                 }
                 <Button className={classes.next} onClick={handleSubmit}>
@@ -178,11 +177,3 @@ export default function LogIn() {
         </div>
     );
 }
-
-/*
-const useStyles = makeStyles({
-  root: {
-    flexGrow: 1,
-  },
-});
-*/

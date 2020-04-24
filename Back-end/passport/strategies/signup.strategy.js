@@ -46,7 +46,7 @@ const signupStrategy = new LocalStrategy({
             }
             const file = new Promise((resolve, reject) => {
                 console.log(process.cwd());
-                fs.readFile('./emailVerification/form.html', 'utf8', (err, data) => {
+                fs.readFile('./verification/emailVerification/form.html', 'utf8', (err, data) => {
                     if (err) reject(err);
                     resolve(data);
                 })

@@ -194,10 +194,14 @@ export default function LogIn() {
                     </Typography>
                 </Typography>
                 <Typography className={classes.smallFont}>
-                    Forget your password?
-                    {/* <Link>
-                        Recover password
-                    </Link> */}
+                    Forgot your password?
+                    <Typography 
+                        className={classes.link} 
+                        component={Link} 
+                        href='/forgotPassword'
+                    >
+                        Recover it
+                    </Typography>
                 </Typography>
                 <Typography className={classes.smallFont}>
                     Or Log In with Facebook or Google:
