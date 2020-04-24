@@ -50,4 +50,22 @@ router.put('/update', (req, res) => {
 
 });
 
+router.get('/findUserByEmail', (req, res) => {
+    const { email }= req.query;
+    prisma.user.findOne({
+        where: {
+            email,
+        }
+    })
+    .then(user => {
+        if(user)
+            res.sendStatus(200);
+        else
+            res.status(404).send("Your account does not exist in our system.");
+    })
+    .catch(err => {
+        console.log(err);
+    })
+})
+
 module.exports = router;

@@ -5,13 +5,14 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { withRouter } from 'next/router';
 import Login from './login';
 import Signup from './signup';
+import ForgotPassword from './forgotPassword';
 import UserProvider from '../contexts/UserProvider.js';
 import VerifyFail from './verifyFail.js';
 import VerifySuccessful from './verifySuccessful.js';
 
 class MyApp extends App {
 
-  specialLinks = ['/login', '/signup', '/verifySuccessful', '/verifyFail']
+  specialLinks = ['/login', '/signup', '/verifySuccessful', '/verifyFail', '/forgotPassword']
 
   state = {
     path: ""
@@ -155,6 +156,10 @@ class MyApp extends App {
           {
             this.state.path === "/signup" &&
             <Signup/>
+          }
+          {
+            this.state.path === "/forgotPassword" &&
+            <ForgotPassword/>
           }
           {
             this.state.path === "/verifyFail" &&

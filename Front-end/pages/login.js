@@ -117,10 +117,6 @@ export default function LogIn() {
             });
     };
 
-    const handleFacebook = () => {
-        loginUser('facebook')
-    };
-
     const handleKeyDown = (event) => {
         if(event.key==='Enter')
             handleSubmit();
@@ -198,17 +194,21 @@ export default function LogIn() {
                     </Typography>
                 </Typography>
                 <Typography className={classes.smallFont}>
-                    Forget your password?
-                    {/* <Link>
-                        Recover password
-                    </Link> */}
+                    Forgot your password?
+                    <Typography 
+                        className={classes.link} 
+                        component={Link} 
+                        href='/forgotPassword'
+                    >
+                        Recover it
+                    </Typography>
                 </Typography>
                 <Typography className={classes.smallFont}>
                     Or Log In with Facebook or Google:
                 </Typography>
                 <div className={classes.images}>
                     <Button 
-                        onClick={handleFacebook}
+                        onClick={() => {loginUser("facebook")}}
                         classes={{
                             root: classes.buttonLabel
                         }}
@@ -218,9 +218,12 @@ export default function LogIn() {
                             className={classes.image}
                         />
                     </Button>
-                    <Button classes={{
-                        root: classes.buttonLabel,
-                    }}>
+                    <Button 
+                        onClick={() => {loginUser("google")}}
+                        classes={{
+                            root: classes.buttonLabel,
+                        }}
+                    >
                         <img 
                             src="/google.png"
                             className={classes.image}
