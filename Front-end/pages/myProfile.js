@@ -1,14 +1,17 @@
 import React from 'react';
 import axios from 'axios';
 import _ from 'lodash';
+import Router from 'next/router';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import Button from '@material-ui/core/Button';
+import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import Grid from '@material-ui/core/Grid';
-import ButtonBase from '@material-ui/core/ButtonBase';
 import Divider from '@material-ui/core/Divider';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import UserProvider from '../contexts/UserProvider.js';
+import ProfilePost from '../components/ProfilePost.js';
 
 const styles = theme => ({
     root: {
@@ -16,6 +19,26 @@ const styles = theme => ({
         backgroundColor: theme.getColor("paper"),
         height: '100%',
         width: '100%'
+    },
+    buttonAddPost: {
+        display: 'flex',
+        background: theme.palette.barButton.main,
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        height: '100%',
+    },
+    gridAddPost: {
+        height: 447.33
+    },
+    addIcon: {
+        height: 50,
+        width: 50,
+        fill: theme.palette.type==="light"? theme.palette.common.white:theme.palette.common.black,
+        transition: theme.transitions.create('fill', {
+            easing: theme.transitions.easing.easeInOut,
+            duration: 425,
+        }),
     },
     image: {
         width: 170,
@@ -43,23 +66,79 @@ const styles = theme => ({
         marginBottom: 10,
         alignItems: 'center'
     },
+    postsTitle: {
+        marginBottom: 20,
+        display: 'flex',
+        justifyContent: 'flex-start',
+        width: '100%'
+    },
+    posts: {
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+    },
+    postsGrid: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
 });
 
 class MyProfile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            user: {}
+            user: {},
+            posts: [], 
         };
     }
 
+    getPosts = (count) => {
+        return new Promise((resolve, reject) => {
+            axios.get('/api/cardPost/getPostsOfUser', {
+                params: {
+                    authorId: this.context.user.id,
+                    count,
+                }
+            })
+            .then(posts => {
+                resolve(posts);
+            })
+            .catch(err => {
+                reject(err);
+            })
+        });
+    }
+
+    componentCheck = () => {
+
+        if (!_.isEmpty(this.context.user)) {
+            if(!_.isEqual(this.state.user, this.context.user)) {
+                this.setState({ 
+                    user: this.context.user,
+                });
+            }
+        }
+
+        else {
+            Router.push('/');
+        }
+    }
+
     componentDidMount() {
-        this.setState({ user: this.context.user });
+        this.getPosts(3)
+        .then(posts => {
+            this.setState({
+                posts: posts.data
+            })
+        })
+        .catch(err => {
+            console.log(err);
+        });
     }
 
     componentDidUpdate() {
-        if(!_.isEqual(this.state.user, this.context.user)) 
-            this.setState({ user: this.context.user });
+        this.componentCheck();
     }
 
     render() {
@@ -82,11 +161,26 @@ class MyProfile extends React.Component {
                         </Typography>
                         <Divider className={classes.divider} />
                     </Grid>
-                    <Grid item xs>
-                        <Typography variant="button">
-                            Your uploaded posts:
-                        </Typography>
-
+                    <Grid item xs={12} container className={classes.postsGrid}>
+                        <div className={classes.postsTitle}>
+                            <Typography variant="button">
+                                Your uploaded posts:
+                            </Typography>
+                        </div>
+                        <Grid item xs={12} container spacing={2} direction="row" className={classes.posts}>
+                            {
+                                this.state.posts.map(post => (
+                                    <Grid key={post.id} item xs={12} sm={5} md={3}>
+                                        <ProfilePost info={post}/>
+                                    </Grid>
+                                ))
+                            }
+                            <Grid item xs={12} sm={5} md={3} className={classes.gridAddPost}>
+                                <Button className={classes.buttonAddPost}>
+                                    <AddCircleRoundedIcon className={classes.addIcon}/>
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
             </Paper>

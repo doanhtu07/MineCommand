@@ -69,4 +69,22 @@ router.get('/getLatestEdit', (req, res) => {
     })
 });
 
+router.get('/getPostsOfUser', (req, res) => {
+    prisma.post.findMany({
+        where: {
+            authorId: req.query.authorId 
+        },
+        orderBy: {
+            createdAt: 'desc'
+        },
+        first: parseInt(req.query.count, 10),
+    })
+    .then(posts => {
+        res.send(posts);
+    })
+    .catch(err => {
+        console.log(err);
+    })
+});
+
 module.exports = router;

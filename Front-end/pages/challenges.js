@@ -7,7 +7,11 @@ import ExtensionRoundedIcon from '@material-ui/icons/ExtensionRounded';
 const useStyles = makeStyles(theme => ({
     root: {
         padding: theme.spacing(3, 2),
-        backgroundColor: theme.getColor("paper")
+        backgroundColor: theme.getColor("paper"),
+        transition: theme.transitions.create(['background-color'], {
+            easing: theme.transitions.easing.easeInOut,
+            duration: 425,
+        }),
     },
     title: {
         display: 'flex',

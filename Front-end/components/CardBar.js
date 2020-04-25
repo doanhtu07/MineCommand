@@ -6,11 +6,15 @@ import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
+import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles(theme => ({
     card: {
-        width: '250px',
-        backgroundColor: theme.getColor("paper")
+        backgroundColor: theme.getColor("paper"),
+        transition: theme.transitions.create('background-color', {
+            easing: theme.transitions.easing.easeInOut,
+            duration: 425,
+        }),
     },
     letter: {
         fontWeight: '600',
@@ -43,6 +47,16 @@ const useStyles = makeStyles(theme => ({
     cardMedia: {
         backgroundColor: theme.getColor("cardMedia")
     },
+    shareButton: {
+        display: 'flex',
+        justifyContent: 'center',
+        backgroundColor: theme.getColor("primary"),
+        '&:hover': {
+            backgroundColor: theme.palette.primary.main
+        },
+        borderTopRightRadius: 0,
+        borderTopLeftRadius: 0
+    },
 }));
     
 export default function CardPost(props) {
@@ -69,7 +83,7 @@ export default function CardPost(props) {
                     component="img"
                     alt={cardInfo.name}
                     height="175"
-                    className={classes.cardMedia}
+                    //className={classes.cardMedia}
                     src={cardInfo.image? cardInfo.image:'/creationPlaceHolder.png'}
                     title={cardInfo.name}
                 />
@@ -92,6 +106,9 @@ export default function CardPost(props) {
                     </Typography>
                 </CardContent>
             </CardActionArea>
+            <Button variant="contained" className={classes.shareButton} fullWidth={true}>
+                Share
+            </Button>
         </Card>
     );
 }
