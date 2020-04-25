@@ -99,11 +99,19 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'space-between',
     },
     menuButton: {
-        marginRight: theme.spacing(2),
+        marginRight: 5,
+        height: 40,
+        width: 40,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         background: theme.palette.barButton.main,
         '&:hover': {
             opacity: 0.85
         },
+    },
+    menuButtonLabel: {
+        height: '-webkit-fill-available'
     },
     title: {
         display: 'flex',
@@ -121,13 +129,13 @@ const useStyles = makeStyles(theme => ({
     leftDiv: {
         display: 'flex',
         justifyContent: 'flex-start',
-        minWidth: '200px',
+        minWidth: '75px',
         alignItems: 'center'
     },
     rightDiv: {
         display: 'flex',
         justifyContent: 'flex-end',
-        minWidth: '200px',
+        minWidth: '75px',
         alignItems: 'center'
     },
     search: {
@@ -154,7 +162,17 @@ const useStyles = makeStyles(theme => ({
     MineCommand: {
         position: 'absolute',
         top: '2px',
-        left: 'calc((100% - 400px) / 2)',
+        height: 'auto',
+        [theme.breakpoints.between('sm', 'xl')]: {
+            top: '2px',
+            width: '350px',
+            left: 'calc((100% - 350px) / 2)',
+        },
+        [theme.breakpoints.down('xs')]: {
+            top: 5,
+            position: 'static',
+            width: '150px'
+        },
     },
     torch: {
         '&:hover': {
@@ -189,16 +207,16 @@ const useStyles = makeStyles(theme => ({
     appBar: {
         zIndex: theme.zIndex.drawer + 1,
         transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
+            easing: theme.transitions.easing.easeInOut,
+            duration: 425,
         }),
     },
     appBarShift: {
         marginLeft: drawerWidth,
         width: `calc(100% - ${drawerWidth}px)`,
         transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
+            easing: theme.transitions.easing.easeInOut,
+            duration: 425,
         }),
     },
     hide: {
@@ -211,16 +229,16 @@ const useStyles = makeStyles(theme => ({
     },
     drawerOpen: {
         width: drawerWidth,
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
+        backgroundColor: theme.getColor("menuPaper"),
+        transition: theme.transitions.create(['background-color', 'width'], {
+            easing: theme.transitions.easing.easeInOut,
+            duration: 425,
         }),
-        backgroundColor: theme.getColor("menuPaper")
     },
     drawerClose: {
-        transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
+        transition: theme.transitions.create(['background-color', 'width'], {
+            easing: theme.transitions.easing.easeInOut,
+            duration: 425,
         }),
         overflowX: 'hidden',
         width: '65px',
@@ -437,6 +455,9 @@ export default function Layout(props) {
                             onClick={handleDrawerOpen}
                             edge="start"
                             className={clsx(classes.menuButton, open && classes.hide)}
+                            classes={{
+                                label: classes.menuButtonLabel
+                            }}
                         >
                             <MenuIcon />
                         </IconButton>
@@ -445,6 +466,9 @@ export default function Layout(props) {
                             aria-haspopup="true" 
                             onClick={handleSearchButton}
                             className={classes.menuButton}
+                            classes={{
+                                label: classes.menuButtonLabel
+                            }}
                         >
                             <SearchRoundedIcon classes={{
                                 root: classes.searchIcon
@@ -478,7 +502,7 @@ export default function Layout(props) {
                         </Menu>
                     </div>
                     <Link href='/'>
-                        <img className={classes.MineCommand} src='/MineCommand.png' width='400px' height='auto'/>
+                        <img className={classes.MineCommand} src='/MineCommand.png'/>
                     </Link>
                     <div className={classes.rightDiv}>
                         {

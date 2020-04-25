@@ -39,7 +39,10 @@ const styles = theme => ({
     maxWidth: 'fit-content',
   },
   arrayCards: {
-    marginBottom: '8px'
+    marginBottom: '8px',
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
   },
   pagination: {
     display: 'flex',
@@ -47,6 +50,10 @@ const styles = theme => ({
   },
   paginationUL: {
     backgroundColor: theme.getColor("paper"),
+    transition: theme.transitions.create('background-color', {
+      easing: theme.transitions.easing.easeInOut,
+      duration: 425,
+    }),
     padding: '6px 4px',
     borderRadius: '4px'
   },
@@ -190,9 +197,9 @@ class Index extends React.Component {
         {
           this.state.note==="" &&
           <div>
-            <Grid container justify="center" spacing={6} className={classes.arrayCards}>
+            <Grid container spacing={4} className={classes.arrayCards}>
               {this.state.cards.map(card => (
-                <Grid key={card.name} item className={classes.smallGrid}>
+                <Grid item xs={9} sm={4} md={3} key={card.id} item className={classes.smallGrid}>
                   <CardPost info={card}/>
                 </Grid>
               ))}

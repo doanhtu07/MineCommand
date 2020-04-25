@@ -10,7 +10,11 @@ import CardBar from '../components/CardBar';
 const styles = theme => ({
     root: {
         padding: theme.spacing(3, 2),
-        backgroundColor: theme.getColor("paper")
+        backgroundColor: theme.getColor("paper"),
+        transition: theme.transitions.create(['background-color'], {
+            easing: theme.transitions.easing.easeInOut,
+            duration: 425,
+        }),
     },
     news: {
         fontSize: 'x-large',
@@ -61,7 +65,7 @@ class News extends React.Component {
                 </Typography>
                 <Grid container justify="center" spacing={4}>
                     {this.state.newEditCards.map(card => (
-                        <Grid key={card.name} item className={classes.smallGrid}>
+                        <Grid key={card.name} xs={8} sm={5} md={4} item className={classes.smallGrid}>
                             <CardBar info={card}/>
                         </Grid>
                     ))}

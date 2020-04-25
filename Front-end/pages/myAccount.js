@@ -19,7 +19,11 @@ const styles = theme => ({
         padding: theme.spacing(4),
         margin: 'auto',
         backgroundColor: theme.getColor("paper"),
-        width: '-webkit-fill-available'
+        width: '-webkit-fill-available',
+        transition: theme.transitions.create(['background-color'], {
+            easing: theme.transitions.easing.easeInOut,
+            duration: 425,
+        }),
     },
     title: {
         fontWeight: 'bold',

@@ -13,11 +13,7 @@ import ThumbUpAltRoundedIcon from '@material-ui/icons/ThumbUpAltRounded';
 
 const useStyles = makeStyles(theme => ({
     card: {
-        backgroundColor: theme.getColor("paper"),
-        transition: theme.transitions.create('background-color', {
-            easing: theme.transitions.easing.easeInOut,
-            duration: 425,
-        }),
+        backgroundColor: theme.getColor("paper")
     },
     letter: {
         fontWeight: '600',
@@ -60,7 +56,7 @@ const useStyles = makeStyles(theme => ({
     },
 }));
     
-export default function CardPost(props) {
+export default function ProfilePost(props) {
     const classes = useStyles();
 
     const cardInfo = props.info;
@@ -86,9 +82,6 @@ export default function CardPost(props) {
                 <CardContent>
                     <Typography component="h6" className={classes.letter} noWrap={true}>
                         {cardInfo.name}
-                    </Typography>
-                    <Typography gutterBottom className={classes.subtitle1} noWrap={true}>
-                        Created by {cardInfo.author.name}
                     </Typography>
                     <Typography gutterBottom className={classes.subtitle2}>
                         Last edited: {handleDate(cardInfo.updatedAt)}

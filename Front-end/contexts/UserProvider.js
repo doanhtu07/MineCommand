@@ -25,7 +25,6 @@ class UserProvider extends React.Component {
         });
     }
 
-
     componentDidMount() {
         this.getUser()
         .then(user => {
