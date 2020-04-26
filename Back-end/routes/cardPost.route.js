@@ -5,6 +5,35 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const { indices } = require('../algolia');
 
+router.put('/create', (req, res) => {
+    const { name, description, typeRef, subType, authorId } = req.body;
+    prisma.post.create({
+        data: {
+            name,
+            description,
+            type: typeRef,
+            subType: {
+                set: subType
+            },
+            author: {
+                connect: { id: authorId }
+            }
+        },
+        include: {
+            author: true
+        }
+    })
+    .then(result => {
+        let data = result;
+        data.objectID = result.id;
+        indices.posts_index.saveObject(data);
+        res.send(result);
+    })
+    .catch(err => {
+        console.log(err);
+    })
+});
+
 router.get('/getLatestCreateWithSearch', (req, res) => {
     const items = parseInt(req.query.numItems, 10);
     const page = parseInt(req.query.Page, 10) - 1;

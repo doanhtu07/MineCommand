@@ -45,7 +45,7 @@ model Post {
   description String
   image       String?
   type        String
-  subType     String
+  subType     String[]
   likes       Int       @default(0)
   shares      Int       @default(0)
   download    String?

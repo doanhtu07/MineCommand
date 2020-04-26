@@ -561,7 +561,7 @@ export default function Layout(props) {
                                         </ListItemIcon>
                                         <ListItemText primary="My account" />
                                     </StyledMenuItem>
-                                    <StyledMenuItem component={Link} href="/myProfile">
+                                    <StyledMenuItem component={Link} href="/profileEdit/myProfile">
                                         <ListItemIcon>
                                             <AccountBoxRoundedIcon fontSize="small" />
                                         </ListItemIcon>

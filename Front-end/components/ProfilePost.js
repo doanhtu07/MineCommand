@@ -1,19 +1,25 @@
 import React from 'react';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import { Divider } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import ThumbUpAltRoundedIcon from '@material-ui/icons/ThumbUpAltRounded';
+import Grid from '@material-ui/core/Grid';
+import Chip from '@material-ui/core/Chip';
 
 const useStyles = makeStyles(theme => ({
     card: {
-        backgroundColor: theme.getColor("paper")
+        backgroundColor: theme.getColor("paper"),
+        width: '100%',
+        width: 283.844,
+        height: 490.344,
+        display: 'flex',
+        justifyContent: 'space-between',
+        flexDirection: 'column'
     },
     letter: {
         fontWeight: '600',
@@ -33,6 +39,10 @@ const useStyles = makeStyles(theme => ({
     },
     divideTitle: {
         marginBottom: '8px',
+    },
+    description: {
+        fontSize: 'small',
+        overflowWrap: 'break-word',
     },
     shareButton: {
         display: 'flex',
@@ -54,6 +64,28 @@ const useStyles = makeStyles(theme => ({
     share: {
         fontWeight: 'bold'
     },
+    chipOrange: {
+        margin: 2,
+        background: theme.palette.chip.orange,
+    },
+    chipRed: {
+        margin: 2,
+        background: theme.palette.chip.red,
+    },
+    chipBlue: {
+        margin: 2,
+        background: theme.palette.chip.blue
+    },
+    subTypeChips: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'flex-start',
+        justifyContent: 'space-evenly',
+        padding: theme.spacing(1)
+    },
+    cardAction: {
+        flexGrow: 1
+    },
 }));
     
 export default function ProfilePost(props) {
@@ -71,7 +103,7 @@ export default function ProfilePost(props) {
 
     return (
         <Card className={classes.card}>
-            <CardActionArea>
+            <CardActionArea className={classes.cardAction}>
                 <CardMedia
                     component="img"
                     alt={cardInfo.name}
@@ -90,16 +122,32 @@ export default function ProfilePost(props) {
                     <Typography gutterBottom component="h6" className={classes.letter}>
                         Description:
                     </Typography>
-                    <Typography gutterBottom component="h6" noWrap={true}>
-                        {cardInfo.description}
+                    <Typography gutterBottom className={classes.description}>
+                        {cardInfo.description.substring(0, 66)}...
                     </Typography>
                     <Typography component="h6" className={classes.letter}>
                         {cardInfo.type} 
                     </Typography>
-                    <Typography component="h6" className={classes.letter}>
-                        {cardInfo.subType} 
-                    </Typography>
                 </CardContent>
+                <div className={classes.subTypeChips}>
+                    {
+                        cardInfo.subType.map((value) => (
+                            <Chip
+                                key={value} 
+                                label={value} 
+                                className=
+                                {
+                                    value==="Command"?
+                                    classes.chipOrange:
+                                    value==="Redstone"?
+                                    classes.chipRed:
+                                    classes.chipBlue
+                                }
+                                size="small"
+                            />
+                        ))
+                    }
+                </div>
                 <div className={classes.likeAndShareShow}>
                     <Typography className={classes.like}>
                         <ThumbUpAltRoundedIcon/> 

@@ -7,6 +7,8 @@ import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
+import Grid from '@material-ui/core/Grid';
+import Chip from '@material-ui/core/Chip';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -15,6 +17,8 @@ const useStyles = makeStyles(theme => ({
             easing: theme.transitions.easing.easeInOut,
             duration: 425,
         }),
+        width: 283.844,
+        height: 'auto'
     },
     letter: {
         fontWeight: '600',
@@ -56,6 +60,25 @@ const useStyles = makeStyles(theme => ({
         },
         borderTopRightRadius: 0,
         borderTopLeftRadius: 0
+    },
+    chipOrange: {
+        margin: 2,
+        background: theme.palette.chip.orange,
+    },
+    chipRed: {
+        margin: 2,
+        background: theme.palette.chip.red,
+    },
+    chipBlue: {
+        margin: 2,
+        background: theme.palette.chip.blue
+    },
+    subTypeChips: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'flex-start',
+        justifyContent: 'space-evenly',
+        padding: theme.spacing(1)
     },
 }));
     
@@ -101,10 +124,26 @@ export default function CardPost(props) {
                     <Typography component="h6" className={classes.letter}>
                         {cardInfo.type}
                     </Typography>
-                    <Typography component="h6" className={classes.letter}>
-                        {cardInfo.subType}
-                    </Typography>
                 </CardContent>
+                <div className={classes.subTypeChips}>
+                    {
+                        cardInfo.subType.map((value) => (
+                            <Chip
+                                key={value} 
+                                label={value} 
+                                className=
+                                {
+                                    value==="Command"?
+                                    classes.chipOrange:
+                                    value==="Redstone"?
+                                    classes.chipRed:
+                                    classes.chipBlue
+                                }
+                                size="small"
+                            />
+                        ))
+                    }
+                </div>
             </CardActionArea>
             <Button variant="contained" className={classes.shareButton} fullWidth={true}>
                 Share

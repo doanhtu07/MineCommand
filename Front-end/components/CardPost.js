@@ -10,6 +10,8 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Button from '@material-ui/core/Button';
 import ThumbUpAltRoundedIcon from '@material-ui/icons/ThumbUpAltRounded';
+import Grid from '@material-ui/core/Grid';
+import Chip from '@material-ui/core/Chip';
 
 const useStyles = makeStyles(theme => ({
     card: {
@@ -18,6 +20,13 @@ const useStyles = makeStyles(theme => ({
             easing: theme.transitions.easing.easeInOut,
             duration: 425,
         }),
+        // width: '100%',
+        // height: '100%',
+        width: 283.844,
+        height: 490.344,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
     },
     letter: {
         fontWeight: '600',
@@ -29,6 +38,13 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'space-evenly',
         marginBottom: '8px'
     },
+    subTypeChips: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'flex-start',
+        justifyContent: 'space-evenly',
+        padding: theme.spacing(1)
+    },
     subtitle1: {
         fontSize: 'smaller',
     },
@@ -37,6 +53,10 @@ const useStyles = makeStyles(theme => ({
     },
     divideTitle: {
         marginBottom: '8px',
+    },
+    description: {
+        fontSize: 'small',
+        overflowWrap: 'break-word',
     },
     shareButton: {
         display: 'flex',
@@ -58,6 +78,21 @@ const useStyles = makeStyles(theme => ({
     share: {
         fontWeight: 'bold'
     },
+    chipOrange: {
+        margin: 2,
+        background: theme.palette.chip.orange,
+    },
+    chipRed: {
+        margin: 2,
+        background: theme.palette.chip.red,
+    },
+    chipBlue: {
+        margin: 2,
+        background: theme.palette.chip.blue
+    },
+    cardAction: {
+        flexGrow: 1
+    },
 }));
     
 export default function CardPost(props) {
@@ -75,7 +110,7 @@ export default function CardPost(props) {
 
     return (
         <Card className={classes.card}>
-            <CardActionArea>
+            <CardActionArea className={classes.cardAction}>
                 <CardMedia
                     component="img"
                     alt={cardInfo.name}
@@ -97,16 +132,32 @@ export default function CardPost(props) {
                     <Typography gutterBottom component="h6" className={classes.letter}>
                         Description:
                     </Typography>
-                    <Typography gutterBottom component="h6" noWrap={true}>
-                        {cardInfo.description}
+                    <Typography gutterBottom className={classes.description}>
+                        {cardInfo.description.substring(0, 66)}...
                     </Typography>
                     <Typography component="h6" className={classes.letter}>
                         {cardInfo.type} 
                     </Typography>
-                    <Typography component="h6" className={classes.letter}>
-                        {cardInfo.subType} 
-                    </Typography>
                 </CardContent>
+                <div className={classes.subTypeChips}>
+                    {
+                        cardInfo.subType.map((value) => (
+                            <Chip
+                                key={value} 
+                                label={value} 
+                                className=
+                                {
+                                    value==="Command"?
+                                    classes.chipOrange:
+                                    value==="Redstone"?
+                                    classes.chipRed:
+                                    classes.chipBlue
+                                }
+                                size="small"
+                            />
+                        ))
+                    }
+                </div>
                 <div className={classes.likeAndShareShow}>
                     <Typography className={classes.like}>
                         <ThumbUpAltRoundedIcon/> 

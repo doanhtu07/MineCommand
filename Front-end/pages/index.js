@@ -16,6 +16,7 @@ const styles = theme => ({
     flexGrow: 1,
     display: 'flex',
     justifyContent: 'center',
+    alignItems: 'center',
     flexDirection: 'column'
   },
   paper: {
@@ -37,6 +38,7 @@ const styles = theme => ({
   },
   smallGrid: {
     maxWidth: 'fit-content',
+    height: 'fit-content'
   },
   arrayCards: {
     marginBottom: '8px',
@@ -55,7 +57,7 @@ const styles = theme => ({
       duration: 425,
     }),
     padding: '6px 4px',
-    borderRadius: '4px'
+    borderRadius: '4px',
   },
 });
 
@@ -112,7 +114,6 @@ class Index extends React.Component {
       }
     })
     .then(res => {
-      console.log(res.data);
       if(!_.isEmpty(res.data.hits))
         this.setState({
           cards: res.data.hits,
@@ -133,8 +134,6 @@ class Index extends React.Component {
 
   //https://www.w3schools.com/js/js_comparisons.asp
   handleGo = (event, newPage) => {
-    console.log(newPage);
-    console.log(this.state.search);
     if(this.state.search==="") 
       Router.push(`/?page=${newPage}`, `/?page=${newPage}`, { shallow: true });
     else 
@@ -199,7 +198,7 @@ class Index extends React.Component {
           <div>
             <Grid container spacing={4} className={classes.arrayCards}>
               {this.state.cards.map(card => (
-                <Grid item xs={9} sm={4} md={3} key={card.id} item className={classes.smallGrid}>
+                <Grid item xs={8} sm={5} md={4} key={card.id} className={classes.smallGrid}>
                   <CardPost info={card}/>
                 </Grid>
               ))}

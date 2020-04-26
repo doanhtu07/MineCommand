@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import _ from 'lodash';
 import Router from 'next/router';
+import Link from '../../src/Link';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
@@ -10,8 +11,8 @@ import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
-import UserProvider from '../contexts/UserProvider.js';
-import ProfilePost from '../components/ProfilePost.js';
+import UserProvider from '../../contexts/UserProvider.js';
+import ProfilePost from '../../components/ProfilePost.js';
 
 const styles = theme => ({
     root: {
@@ -27,9 +28,6 @@ const styles = theme => ({
         alignItems: 'center',
         width: '100%',
         height: '100%',
-    },
-    gridAddPost: {
-        height: 447.33
     },
     addIcon: {
         height: 50,
@@ -74,12 +72,22 @@ const styles = theme => ({
     },
     posts: {
         display: 'flex',
-        justifyContent: 'flex-start',
+        justifyContent: 'space-evenly',
         alignItems: 'center',
     },
     postsGrid: {
         display: 'flex',
         justifyContent: 'center',
+        alignItems: 'center'
+    },
+    smallGrid: {
+        maxWidth: 'fit-content',
+        height: 'fit-content',
+        padding: 10
+    },
+    seeMore: {
+        display: 'flex',
+        justifyContent: 'flex-end',
         alignItems: 'center'
     },
 });
@@ -167,20 +175,44 @@ class MyProfile extends React.Component {
                                 Your uploaded posts:
                             </Typography>
                         </div>
-                        <Grid item xs={12} container spacing={2} direction="row" className={classes.posts}>
-                            {
-                                this.state.posts.map(post => (
-                                    <Grid key={post.id} item xs={12} sm={5} md={3}>
-                                        <ProfilePost info={post}/>
-                                    </Grid>
-                                ))
-                            }
-                            <Grid item xs={12} sm={5} md={3} className={classes.gridAddPost}>
-                                <Button className={classes.buttonAddPost}>
-                                    <AddCircleRoundedIcon className={classes.addIcon}/>
-                                </Button>
+                        {
+                            !_.isEmpty(this.state.posts) &&
+                            <Grid item xs={12} container direction="row" className={classes.posts}>
+                                {
+                                    this.state.posts.map(post => (
+                                        <Grid key={post.id} item xs={8} sm={5} md={4} className={classes.smallGrid}>
+                                            <ProfilePost info={post}/>
+                                        </Grid>
+                                    ))
+                                }
                             </Grid>
+                        }
+                        {
+                            _.isEmpty(this.state.posts) &&
+                            <Grid item xs={12} className={classes.posts}>
+                                <Typography>
+                                    It seems like you have no post yet. Create your first
+                                    one!
+                                </Typography>
+                            </Grid>
+                        }
+                    </Grid>
+                    {
+                        !_.isEmpty(this.state.posts) &&
+                        <Grid item xs={12} className={classes.seeMore}>
+                            <Button>
+                                See More
+                            </Button>
                         </Grid>
+                    }
+                    <Grid item xs={12}>
+                        <Button 
+                            className={classes.buttonAddPost}
+                            component={Link}
+                            href='/profileEdit/addPost'
+                        >
+                            <AddCircleRoundedIcon className={classes.addIcon}/>
+                        </Button>
                     </Grid>
                 </Grid>
             </Paper>

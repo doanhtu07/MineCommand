@@ -32,7 +32,14 @@ const styles = theme => ({
     },
     smallGrid: {
         maxWidth: 'fit-content',
-    } 
+        height: 'fit-content'
+    },
+    arrayCards: {
+        marginBottom: '8px',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+    }, 
 });
 
 class News extends React.Component {
@@ -63,9 +70,9 @@ class News extends React.Component {
                 <Typography className={classes.subNews}>
                     Latest Edited Posts
                 </Typography>
-                <Grid container justify="center" spacing={4}>
-                    {this.state.newEditCards.map(card => (
-                        <Grid key={card.name} xs={8} sm={5} md={4} item className={classes.smallGrid}>
+                <Grid container spacing={4} className={classes.arrayCards}>
+                    {this.state.cards.map(card => (
+                        <Grid item xs={8} sm={5} md={4} key={card.id} className={classes.smallGrid}>
                             <CardBar info={card}/>
                         </Grid>
                     ))}
