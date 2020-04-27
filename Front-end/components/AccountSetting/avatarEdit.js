@@ -93,7 +93,8 @@ const styles = theme => ({
         height: '100%',
         padding: theme.spacing(4),
         background: theme.palette.barButton.main,
-        borderRadius: 0
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0
     },
     uploadPhotoLabel: {
         display: 'flex',

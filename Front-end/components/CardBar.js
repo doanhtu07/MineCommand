@@ -17,12 +17,15 @@ const useStyles = makeStyles(theme => ({
             easing: theme.transitions.easing.easeInOut,
             duration: 425,
         }),
-        width: 283.844,
-        height: 'auto'
+        width: 220,
+        height: 310,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between'
     },
     letter: {
         fontWeight: '600',
-        fontSize: 'medium',
+        fontSize: 'small',
     },
     likeAndShareShow: {
         display: 'flex',
@@ -47,9 +50,6 @@ const useStyles = makeStyles(theme => ({
     },
     divideTitle: {
         marginBottom: '8px',
-    },
-    cardMedia: {
-        backgroundColor: theme.getColor("cardMedia")
     },
     shareButton: {
         display: 'flex',
@@ -80,6 +80,28 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'space-evenly',
         padding: theme.spacing(1)
     },
+    cardAction: {
+        flexGrow: 1,
+        display: 'flex',
+        justifyContent: 'flex-start',
+        flexDirection: 'column',
+        alignItems: 'normal'
+    },
+    imageMedia: {
+        height: 'fit-content',
+        maxHeight: 125,
+        objectFit: 'scale-down',
+    },
+    content: {
+        paddingLeft: 16,
+        paddingRight: 16,
+        paddingTop: 8,
+        padding: 0,
+    },
+    div: {
+        overflow: 'hidden',
+        height: 110
+    }
 }));
     
 export default function CardPost(props) {
@@ -101,16 +123,15 @@ export default function CardPost(props) {
 
     return (
         <Card className={classes.card}>
-            <CardActionArea>
-                <CardMedia
-                    component="img"
-                    alt={cardInfo.name}
-                    height="175"
-                    //className={classes.cardMedia}
-                    src={cardInfo.image? cardInfo.image:'/creationPlaceHolder.png'}
-                    title={cardInfo.name}
-                />
-                <CardContent>
+            <CardActionArea className={classes.cardAction}>
+                <div className={classes.div}>
+                    <img 
+                        title={cardInfo.name}
+                        className={classes.imageMedia}
+                        src={cardInfo.image? cardInfo.image:'/creationPlaceHolder.png'}
+                    />
+                </div>
+                <CardContent className={classes.content}>
                     <Typography component="h6" className={classes.letter} noWrap={true}>
                         {cardInfo.name}
                     </Typography>
@@ -123,27 +144,27 @@ export default function CardPost(props) {
                     <Divider className={classes.divideTitle}/>
                     <Typography component="h6" className={classes.letter}>
                         {cardInfo.type}
+                        <div className={classes.subTypeChips}>
+                            {
+                                cardInfo.subType.map((value) => (
+                                    <Chip
+                                        key={value} 
+                                        label={value} 
+                                        className=
+                                        {
+                                            value==="Command"?
+                                            classes.chipOrange:
+                                            value==="Redstone"?
+                                            classes.chipRed:
+                                            classes.chipBlue
+                                        }
+                                        size="small"
+                                    />
+                                ))
+                            }
+                        </div>
                     </Typography>
                 </CardContent>
-                <div className={classes.subTypeChips}>
-                    {
-                        cardInfo.subType.map((value) => (
-                            <Chip
-                                key={value} 
-                                label={value} 
-                                className=
-                                {
-                                    value==="Command"?
-                                    classes.chipOrange:
-                                    value==="Redstone"?
-                                    classes.chipRed:
-                                    classes.chipBlue
-                                }
-                                size="small"
-                            />
-                        ))
-                    }
-                </div>
             </CardActionArea>
             <Button variant="contained" className={classes.shareButton} fullWidth={true}>
                 Share

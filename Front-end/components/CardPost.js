@@ -20,17 +20,15 @@ const useStyles = makeStyles(theme => ({
             easing: theme.transitions.easing.easeInOut,
             duration: 425,
         }),
-        // width: '100%',
-        // height: '100%',
-        width: 283.844,
-        height: 490.344,
+        width: 220,
+        height: 400,
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between'
     },
     letter: {
         fontWeight: '600',
-        fontSize: 'medium',
+        fontSize: 'small',
     },
     likeAndShareShow: {
         display: 'flex',
@@ -91,8 +89,26 @@ const useStyles = makeStyles(theme => ({
         background: theme.palette.chip.blue
     },
     cardAction: {
-        flexGrow: 1
+        flexGrow: 1,
+        display: 'flex',
+        justifyContent: 'space-between',
+        flexDirection: 'column',
+        alignItems: 'normal'
     },
+    imageMedia: {
+        height: 'fit-content',
+        maxHeight: 125,
+        objectFit: 'fill',
+    },
+    content: {
+        paddingLeft: 16,
+        paddingRight: 16,
+        padding: 0,
+    },
+    div: {
+        overflow: 'hidden',
+        height: 110
+    }
 }));
     
 export default function CardPost(props) {
@@ -111,15 +127,15 @@ export default function CardPost(props) {
     return (
         <Card className={classes.card}>
             <CardActionArea className={classes.cardAction}>
-                <CardMedia
-                    component="img"
-                    alt={cardInfo.name}
-                    height="175"
-                    src={cardInfo.image? cardInfo.image:'/creationPlaceHolder.png'}
-                    title={cardInfo.name}
-                />
-                <CardContent>
-                    <Typography component="h6" className={classes.letter} noWrap={true}>
+                <div className={classes.div}>
+                    <img 
+                        title={cardInfo.name}
+                        className={classes.imageMedia}
+                        src={cardInfo.image? cardInfo.image:'/creationPlaceHolder.png'}
+                    />
+                </div>
+                <CardContent className={classes.content}>
+                    <Typography className={classes.letter} noWrap={true}>
                         {cardInfo.name}
                     </Typography>
                     <Typography gutterBottom className={classes.subtitle1} noWrap={true}>
@@ -133,31 +149,31 @@ export default function CardPost(props) {
                         Description:
                     </Typography>
                     <Typography gutterBottom className={classes.description}>
-                        {cardInfo.description.substring(0, 66)}...
+                        {cardInfo.description.substring(0, 50)}...
                     </Typography>
                     <Typography component="h6" className={classes.letter}>
                         {cardInfo.type} 
+                        <div className={classes.subTypeChips}>
+                            {
+                                cardInfo.subType.map((value) => (
+                                    <Chip
+                                        key={value} 
+                                        label={value} 
+                                        className=
+                                        {
+                                            value==="Command"?
+                                            classes.chipOrange:
+                                            value==="Redstone"?
+                                            classes.chipRed:
+                                            classes.chipBlue
+                                        }
+                                        size="small"
+                                    />
+                                ))
+                            }
+                        </div>
                     </Typography>
                 </CardContent>
-                <div className={classes.subTypeChips}>
-                    {
-                        cardInfo.subType.map((value) => (
-                            <Chip
-                                key={value} 
-                                label={value} 
-                                className=
-                                {
-                                    value==="Command"?
-                                    classes.chipOrange:
-                                    value==="Redstone"?
-                                    classes.chipRed:
-                                    classes.chipBlue
-                                }
-                                size="small"
-                            />
-                        ))
-                    }
-                </div>
                 <div className={classes.likeAndShareShow}>
                     <Typography className={classes.like}>
                         <ThumbUpAltRoundedIcon/> 

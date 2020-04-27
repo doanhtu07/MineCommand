@@ -21,23 +21,6 @@ const styles = theme => ({
         height: '100%',
         width: '100%'
     },
-    buttonAddPost: {
-        display: 'flex',
-        background: theme.palette.barButton.main,
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%',
-        height: '100%',
-    },
-    addIcon: {
-        height: 50,
-        width: 50,
-        fill: theme.palette.type==="light"? theme.palette.common.white:theme.palette.common.black,
-        transition: theme.transitions.create('fill', {
-            easing: theme.transitions.easing.easeInOut,
-            duration: 425,
-        }),
-    },
     image: {
         width: 170,
         height: 170,
@@ -72,8 +55,8 @@ const styles = theme => ({
     },
     posts: {
         display: 'flex',
-        justifyContent: 'space-evenly',
         alignItems: 'center',
+        justifyContent: 'flex-start'
     },
     postsGrid: {
         display: 'flex',
@@ -83,7 +66,7 @@ const styles = theme => ({
     smallGrid: {
         maxWidth: 'fit-content',
         height: 'fit-content',
-        padding: 10
+        padding: 20
     },
     seeMore: {
         display: 'flex',
@@ -134,7 +117,7 @@ class MyProfile extends React.Component {
     }
 
     componentDidMount() {
-        this.getPosts(3)
+        this.getPosts(4)
         .then(posts => {
             this.setState({
                 posts: posts.data
@@ -177,15 +160,17 @@ class MyProfile extends React.Component {
                         </div>
                         {
                             !_.isEmpty(this.state.posts) &&
-                            <Grid item xs={12} container direction="row" className={classes.posts}>
-                                {
-                                    this.state.posts.map(post => (
-                                        <Grid key={post.id} item xs={8} sm={5} md={4} className={classes.smallGrid}>
-                                            <ProfilePost info={post}/>
-                                        </Grid>
-                                    ))
-                                }
-                            </Grid>
+                            <div>
+                                <Grid item xs container className={classes.posts}>
+                                    {
+                                        this.state.posts.map(post => (
+                                            <Grid key={post.id} item xs={8} sm={5} md={4} className={classes.smallGrid}>
+                                                <ProfilePost info={post}/>
+                                            </Grid>
+                                        ))
+                                    }
+                                </Grid>
+                            </div>
                         }
                         {
                             _.isEmpty(this.state.posts) &&
@@ -205,15 +190,6 @@ class MyProfile extends React.Component {
                             </Button>
                         </Grid>
                     }
-                    <Grid item xs={12}>
-                        <Button 
-                            className={classes.buttonAddPost}
-                            component={Link}
-                            href='/profileEdit/addPost'
-                        >
-                            <AddCircleRoundedIcon className={classes.addIcon}/>
-                        </Button>
-                    </Grid>
                 </Grid>
             </Paper>
         );

@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 const { indices } = require('../algolia');
 
 router.put('/create', (req, res) => {
-    const { name, description, typeRef, subType, authorId } = req.body;
+    const { name, description, typeRef, subType, image, authorId } = req.body;
     prisma.post.create({
         data: {
             name,
@@ -15,6 +15,7 @@ router.put('/create', (req, res) => {
             subType: {
                 set: subType
             },
+            image,
             author: {
                 connect: { id: authorId }
             }

@@ -37,6 +37,7 @@ import PlayArrowRoundedIcon from '@material-ui/icons/PlayArrowRounded';
 import MeetingRoomRoundedIcon from '@material-ui/icons/MeetingRoomRounded';
 import AccountBoxRoundedIcon from '@material-ui/icons/AccountBoxRounded';
 import SettingsRoundedIcon from '@material-ui/icons/SettingsRounded';
+import AddRoundedIcon from '@material-ui/icons/AddRounded';
 import sand from '../public/sand.jpg';
 import bush from '../public/bush.png';
 import day from '../public/day.png';
@@ -99,7 +100,7 @@ const useStyles = makeStyles(theme => ({
         justifyContent: 'space-between',
     },
     menuButton: {
-        marginRight: 5,
+        marginRight: 8,
         height: 40,
         width: 40,
         display: 'flex',
@@ -121,6 +122,8 @@ const useStyles = makeStyles(theme => ({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
+        paddingLeft: 24,
+        paddingRight: 5
     },
     icon: {
         fontSize: 'xx-large',
@@ -135,7 +138,7 @@ const useStyles = makeStyles(theme => ({
     rightDiv: {
         display: 'flex',
         justifyContent: 'flex-end',
-        minWidth: '75px',
+        minWidth: '120px',
         alignItems: 'center'
     },
     search: {
@@ -163,16 +166,21 @@ const useStyles = makeStyles(theme => ({
         position: 'absolute',
         top: '2px',
         height: 'auto',
-        [theme.breakpoints.between('sm', 'xl')]: {
+        [theme.breakpoints.up('sm')]: {
             top: '2px',
             width: '350px',
             left: 'calc((100% - 350px) / 2)',
         },
         [theme.breakpoints.down('xs')]: {
-            top: 5,
             position: 'static',
-            width: '150px'
+            width: '65%',
         },
+    },
+    MineCommandLink: {
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        maxWidth: 'fit-content'
     },
     torch: {
         '&:hover': {
@@ -188,6 +196,9 @@ const useStyles = makeStyles(theme => ({
         },
         backgroundColor: theme.palette.avatar.main,
         color: theme.palette.common.white
+    },
+    addIcon: {
+        fill: theme.palette.common.white
     },
 
 
@@ -275,7 +286,7 @@ const useStyles = makeStyles(theme => ({
         }),
     },  
     divider: {
-        height: '130px'
+        height: '110px'
     },
 }));
 
@@ -501,7 +512,7 @@ export default function Layout(props) {
                             </Button>
                         </Menu>
                     </div>
-                    <Link href='/'>
+                    <Link href='/' className={classes.MineCommandLink}>
                         <img className={classes.MineCommand} src='/MineCommand.png'/>
                     </Link>
                     <div className={classes.rightDiv}>
@@ -510,9 +521,11 @@ export default function Layout(props) {
                             <img 
                                 className={classes.torch}  
                                 src='/torchOn.png' 
-                                height='50px'
+                                height='45px'
                                 width='auto'
                                 onClick={props.toggleTheme}
+                                title="Light Mode"
+                                alt="Light Mode"
                             />
                         }
                         {
@@ -520,9 +533,11 @@ export default function Layout(props) {
                             <img 
                                 className={classes.torch}  
                                 src='/torchOff.png' 
-                                height='50px'
+                                height='45px'
                                 width='auto'
                                 onClick={props.toggleTheme}
+                                title="Dark Mode"
+                                alt="Dark Mode"
                             />
                         }
                         {
@@ -537,6 +552,21 @@ export default function Layout(props) {
                             >
                                 Login
                             </Button>
+                        }
+                        {
+                            !_.isEmpty(user) &&
+                            <IconButton
+                                component={Link}
+                                href='/profileEdit/addPost'
+                                className={classes.menuButton}
+                                classes={{
+                                    label: classes.menuButtonLabel
+                                }}
+                                title="Create a post"
+                                alt="Create a post"
+                            >
+                                <AddRoundedIcon className={classes.addIcon}/>
+                            </IconButton>
                         }
                         {
                             !_.isEmpty(user) &&
@@ -633,11 +663,9 @@ export default function Layout(props) {
                     [classes.contentDark]: theme.palette.type==='dark',
                 })}
             >
-                {/* <Scrollbars> */}
                 <div className={classes.divider}/>
                 <Grid 
                     item xs={12} 
-                    //className={classes.contentMain}
                     className={classes.root}
                 >
                     {props.children}
@@ -652,7 +680,6 @@ export default function Layout(props) {
                         Successfully log out!
                     </Alert>
                 </Snackbar>
-                {/* </Scrollbars> */}
             </main>
         </div>
     );

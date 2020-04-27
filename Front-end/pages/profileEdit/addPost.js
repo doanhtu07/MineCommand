@@ -18,6 +18,10 @@ import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import UserProvider from '../../contexts/UserProvider.js';
+import { Backdrop } from '@material-ui/core';
+import MuiAlert from '@material-ui/lab/Alert';
+import Snackbar from '@material-ui/core/Snackbar';
+import UploadPhotoBackDrop from '../../components/AddPost/uploadPhotoBackDrop.js';
 
 const styles = theme => ({
     root: {
@@ -36,15 +40,23 @@ const styles = theme => ({
     },
     img: {
         width: '100%',
-        height: 300,
+        height: 400,
+        objectFit: 'scale-down'
     },
     buttonBaseUpload: {
         width: '100%',
-        height: 300,
+        height: 200,
         borderRadius: 5,
     },
     buttonLabel: {
         fontSize: 'large',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column'
+    },
+    buttonLabelSmall: {
+        fontSize: 'small',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
@@ -93,8 +105,20 @@ const styles = theme => ({
     error: {
         fontSize: 'medium',
         color: theme.palette.error.main
-    }
+    },
+    backDrop: {
+        zIndex: theme.zIndex.drawer + 1,
+        color: '#fff',
+    },
+    uploadImageButton: {
+        maxHeight: 'fit-content',
+        width: '100%'
+    },
 }); 
+
+const Alert = (props) => {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+};
 
 
 class AddPost extends React.Component {
@@ -109,7 +133,11 @@ class AddPost extends React.Component {
             type: "",
             subType: [],
 
-            error: ""
+            error: "",
+            backDrop: false,
+            snackBar: false,
+            snackBarTitle: "",
+            alertSeverity: "",
         };
     }
 
@@ -130,6 +158,33 @@ class AddPost extends React.Component {
         'Furniture',
     ]
 
+    changeImageUrl = (imageUrl) => {
+        this.setState({ image: imageUrl });
+    } 
+
+    openSnackBar = (alertSeverity, snackBarTitle) => {
+        this.setState({
+            snackBar: true,
+            alertSeverity,
+            snackBarTitle
+        });
+    }
+
+    closeSnackBar = () => {
+        this.setState({ 
+            snackBar: false,
+            snackBarTitle: ""
+        });
+    }
+
+    handleUploadButton = () => {
+        this.setState({ backDrop: true });
+    }
+
+    handleCloseBackDrop = () => {
+        this.setState({ backDrop: false });
+    }
+
     handleName = (event) => {
         this.setState({ name: event.target.value });
     }
@@ -147,7 +202,7 @@ class AddPost extends React.Component {
     };
 
     handleSubmit = () => {
-        const { name, description, type, subType } = this.state;
+        const { name, description, type, subType, image } = this.state;
         let typeRef = "";
         if(type===1) 
             typeRef = "Creation";
@@ -167,6 +222,7 @@ class AddPost extends React.Component {
                 description,
                 typeRef,
                 subType,
+                image,
                 authorId: this.state.user.id,
             })
             .then(res => {
@@ -224,14 +280,34 @@ class AddPost extends React.Component {
                                 classes={{
                                     label: classes.buttonLabel
                                 }}
+                                onClick={this.handleUploadButton}
                             >
-                                Upload a picture (optional)
+                                Use a picture (optional)
                                 <AddRoundedIcon/>
                             </Button>
                         }
                         {
                             !_.isEmpty(this.state.image) &&
                             <img src={this.state.image} className={classes.img}/>
+                        }
+                    </Grid>
+                    <Grid item xs container spacing={4}>
+                        {
+                            !_.isEmpty(this.state.image) &&
+                            <Grid item xs>
+                                <Button
+                                    className={classes.uploadImageButton}
+                                    variant="outlined"
+                                    color="primary"
+                                    classes={{
+                                        label: classes.buttonLabelSmall
+                                    }}
+                                    onClick={this.handleUploadButton}
+                                >
+                                    Use a different picture
+                                    <AddRoundedIcon/>
+                                </Button>
+                            </Grid>
                         }
                     </Grid>
                     <Grid item xs className={classes.normalGrid}>
@@ -374,6 +450,38 @@ class AddPost extends React.Component {
                         </Button>
                     </Grid>
                 </Grid>
+                <Backdrop
+                    className={classes.backDrop}
+                    open={this.state.backDrop}
+                >
+                    <UploadPhotoBackDrop
+                        closeBackDrop={this.handleCloseBackDrop}
+                        openSnackBar={this.openSnackBar}
+                        closeSnackBar={this.closeSnackBar}
+                        changeImageUrl={this.changeImageUrl}
+                    />
+                </Backdrop>
+                <Snackbar
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    key={'bottom,right'}
+                    open={this.state.snackBar}
+                    onClose={this.closeSnackBar}
+                >
+                    <Alert onClose={this.closeSnackBar} severity={this.state.alertSeverity}>
+                        {
+                            this.state.alertSeverity==="success" &&
+                            <Typography variant="button">
+                                Successfully add {this.state.snackBarTitle}
+                            </Typography>
+                        }
+                        {
+                            this.state.alertSeverity==="error" &&
+                            <Typography variant="button">
+                                Error at {this.state.snackBarTitle}. Please re-enter your current page to reload.
+                            </Typography>
+                        }
+                    </Alert>
+                </Snackbar>
             </Paper>
         );
     }

@@ -15,6 +15,11 @@ const styles = theme => ({
             easing: theme.transitions.easing.easeInOut,
             duration: 425,
         }),
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column'
     },
     news: {
         fontSize: 'x-large',
@@ -40,13 +45,19 @@ const styles = theme => ({
         justifyContent: 'flex-start',
         alignItems: 'center',
     }, 
+    subTitle: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItems: 'center'
+    },
 });
 
 class News extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            newEditCards: []
+            cards: []
         };
     }
 
@@ -54,7 +65,7 @@ class News extends React.Component {
         //axios.get để tìm 6 post created gần đây nhất
         axios.get('/api/cardPost/getLatestEdit')
         .then(res => {
-            this.setState({newEditCards: res.data});
+            this.setState({ cards: res.data });
         })
     }
 
@@ -66,17 +77,20 @@ class News extends React.Component {
                 <Typography className={classes.news}>
                     NEWS
                 </Typography>
-                <Divider/>
-                <Typography className={classes.subNews}>
-                    Latest Edited Posts
-                </Typography>
-                <Grid container spacing={4} className={classes.arrayCards}>
-                    {this.state.cards.map(card => (
-                        <Grid item xs={8} sm={5} md={4} key={card.id} className={classes.smallGrid}>
-                            <CardBar info={card}/>
-                        </Grid>
-                    ))}
-                </Grid>
+                <div className={classes.subTitle}>
+                    <Typography className={classes.subNews}>
+                        Latest Edited Posts
+                    </Typography>
+                </div>
+                <div>
+                    <Grid container spacing={4} className={classes.arrayCards}>
+                        {this.state.cards.map(card => (
+                            <Grid item xs={8} sm={5} md={4} key={card.id} className={classes.smallGrid}>
+                                <CardBar info={card}/>
+                            </Grid>
+                        ))}
+                    </Grid>
+                </div>
             </Paper>
         );
     }

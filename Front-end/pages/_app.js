@@ -101,7 +101,7 @@ class MyApp extends App {
       chip: {
         orange: 'rgba(210, 134, 90, 1)',
         red: 'rgba(250, 12, 27, 1)',
-        blue: 'rgba(164, 208, 253, 1)',
+        blue: 'linear-gradient(45deg, #2196f3, #03b6fc)',
       },
 
       type: 'light'
