@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
     divideTitle: {
         marginBottom: '8px',
     },
-    description: {
+    introduction: {
         fontSize: 'small',
         overflowWrap: 'break-word',
     },
@@ -141,10 +141,10 @@ export default function ProfilePost(props) {
                     </Typography>
                     <Divider className={classes.divideTitle}/>
                     <Typography gutterBottom component="h6" className={classes.letter}>
-                        Description:
+                        Introduction:
                     </Typography>
-                    <Typography gutterBottom className={classes.description}>
-                        {cardInfo.description.substring(0, 50)}...
+                    <Typography gutterBottom className={classes.introduction}>
+                        {cardInfo.introduction.substring(0, 50)}...
                     </Typography>
                     <Typography component="h6" className={classes.letter}>
                         {cardInfo.type} 

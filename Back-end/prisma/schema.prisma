@@ -38,18 +38,30 @@ model UserVerification {
 }
 
 model Post {
-  id          String    @default(cuid()) @id
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @default(now())
-  name        String   
-  description String
-  image       String?
-  type        String
-  subType     String[]
-  likes       Int       @default(0)
-  shares      Int       @default(0)
-  download    String?
-  video       String?
-  author      User      @relation(fields: [authorId], references: [id])
-  authorId    String
+  id            String        @default(cuid()) @id
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @default(now())
+  name          String   
+  introduction  String
+  image         String?
+  type          String
+  subType       String[]
+  likes         Int           @default(0)
+  shares        Int           @default(0)
+  download      String?
+  video         String?
+  descriptions  Description[]
+  author        User          @relation(fields: [authorId], references: [id])
+  authorId      String
+}
+
+model Description {
+  id            String  @default(cuid()) @id
+  title         String
+  description   String
+  imageUrl      String
+  phototext     String
+  layoutName    String
+  post          Post    @relation(fields: [postId], references: [id])
+  postId        String
 }

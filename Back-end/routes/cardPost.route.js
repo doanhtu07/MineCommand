@@ -6,23 +6,54 @@ const prisma = new PrismaClient();
 const { indices } = require('../algolia');
 
 router.put('/create', (req, res) => {
-    const { name, description, typeRef, subType, image, authorId } = req.body;
-    prisma.post.create({
-        data: {
-            name,
-            description,
-            type: typeRef,
-            subType: {
-                set: subType
+    const { name, introduction, descriptionsArray, typeRef, subType, image, authorId } = req.body;
+    let descriptions = [];
+    let descriptionsPromise = descriptionsArray.map(
+        element => new Promise((resolve, reject) => {
+            descriptions.push({
+                title: element.title,
+                description: element.description,
+                imageUrl: element.imageUrl,
+                phototext: element.phototext,
+                layoutName: element.layoutName
+            });
+            resolve("Successful");
+        })
+    );
+
+    Promise.all(descriptionsPromise)
+    .then(() => {
+        return prisma.user.update({
+            where: {
+                id: authorId
             },
-            image,
-            author: {
-                connect: { id: authorId }
+            data: {
+                updatedAt: new Date()
             }
-        },
-        include: {
-            author: true
-        }
+        })
+    })
+    .then(() => {
+        return prisma.post.create({
+            data: {
+                name,
+                introduction,
+                descriptions: {
+                    create: descriptions
+                },
+                type: typeRef,
+                subType: {
+                    set: subType
+                },
+                image,
+                author: {
+                    connect: { id: authorId }
+                }
+            },
+            include: {
+                author: true,
+                descriptions: true
+            }
+        })
     })
     .then(result => {
         let data = result;

@@ -132,6 +132,10 @@ class MyProfile extends React.Component {
         this.componentCheck();
     }
 
+    componentWillUnmount = () => {
+
+    }
+
     render() {
         const { classes } = this.props; 
 
@@ -177,7 +181,7 @@ class MyProfile extends React.Component {
                             <Grid item xs={12} className={classes.posts}>
                                 <Typography>
                                     It seems like you have no post yet. Create your first
-                                    one!
+                                    one! The Create button is at the top right of the nav bar.
                                 </Typography>
                             </Grid>
                         }

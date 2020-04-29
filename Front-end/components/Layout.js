@@ -194,7 +194,7 @@ const useStyles = makeStyles(theme => ({
         '&:hover': {
             cursor: 'pointer'
         },
-        backgroundColor: theme.palette.avatar.main,
+        background: theme.palette.barButton.main,
         color: theme.palette.common.white
     },
     addIcon: {
@@ -206,7 +206,8 @@ const useStyles = makeStyles(theme => ({
     root: {
         display: 'flex',
         justifyContent: 'center',
-        minHeight: '-webkit-fill-available'
+        minHeight: '-webkit-fill-available',
+        minWidth: '-webkit-fill-available'
     },
     contentMain: {
         display: 'flex',
@@ -292,9 +293,9 @@ const useStyles = makeStyles(theme => ({
 
 //styled components
 const StyledMenu = withStyles({
-    paper: {
-      border: '1px solid #d3d4d5',
-    },
+    // paper: {
+    //   border: '1px solid #d3d4d5',
+    // },
   })((props) => (
     <Menu
         elevation={0}
@@ -314,7 +315,7 @@ const StyledMenu = withStyles({
 const StyledMenuItem = withStyles((theme) => ({
 root: {
     '&:focus': {
-        backgroundColor: theme.palette.primary.main,
+        background: theme.palette.barButton.main,
         '& .MuiListItemIcon-root, & .MuiListItemText-primary': {
             color: theme.palette.common.white,
         },

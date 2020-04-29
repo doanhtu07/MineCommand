@@ -259,6 +259,11 @@ app.put('/changePassword', (req, res) => {
     })
 })
 
+app.post('/image', (req,res) => {
+    console.log(req.files);
+    res.send({url: "bablubalu"});
+})
+
 app.listen(port, () => {
     console.log(`app is listening on port ${port}`);
 });

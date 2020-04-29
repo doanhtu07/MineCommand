@@ -10,6 +10,7 @@ import UserProvider from '../contexts/UserProvider.js';
 import VerifyFail from './verifyFail.js';
 import VerifySuccessful from './verifySuccessful.js';
 
+
 class MyApp extends App {
 
   specialLinks = ['/login', '/signup', '/verifySuccessful', '/verifyFail', '/forgotPassword']

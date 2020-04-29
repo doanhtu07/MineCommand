@@ -22,6 +22,7 @@ import { Backdrop } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 import UploadPhotoBackDrop from '../../components/AddPost/uploadPhotoBackDrop.js';
+import DescriptionBlock from '../../components/AddPost/descriptionBlock.js';
 
 const styles = theme => ({
     root: {
@@ -71,9 +72,6 @@ const styles = theme => ({
         justifyContent: 'space-between',
         alignItems: 'center'
     },
-    descriptionField: {
-        width: '100%'
-    },
     formcontrol: {
         width: '100%'
     },
@@ -114,6 +112,10 @@ const styles = theme => ({
         maxHeight: 'fit-content',
         width: '100%'
     },
+    divider: {
+        marginBottom: 10,
+        marginTop: 20
+    },
 }); 
 
 const Alert = (props) => {
@@ -129,9 +131,11 @@ class AddPost extends React.Component {
             image: {},
 
             name: "",
+            introduction: "",
             description: "",
             type: "",
             subType: [],
+            descriptionsArray: [{index: 0}],
 
             error: "",
             backDrop: false,
@@ -157,6 +161,24 @@ class AddPost extends React.Component {
         'Redstone',
         'Furniture',
     ]
+
+    saveEachDescription = (attributes) => {
+        let temp = this.state.descriptionsArray;
+        temp[attributes.index] = attributes;
+        this.setState({ descriptionsArray: temp });
+    }
+
+    addDescription = () => {
+        let temp = this.state.descriptionsArray;
+        temp.push({index: temp.length});
+        this.setState({ descriptionsArray: temp });
+    }
+
+    removeDescription = (index) => {
+        let temp = this.state.descriptionsArray;
+        temp.splice(index, 1);
+        this.setState({ descriptionsArray: temp });
+    }
 
     changeImageUrl = (imageUrl) => {
         this.setState({ image: imageUrl });
@@ -189,6 +211,10 @@ class AddPost extends React.Component {
         this.setState({ name: event.target.value });
     }
 
+    handleIntroduction = (event) => {
+        this.setState({ introduction: event.target.value });
+    }
+
     handleDescription = (event) => {
         this.setState({ description: event.target.value });
     }
@@ -202,7 +228,7 @@ class AddPost extends React.Component {
     };
 
     handleSubmit = () => {
-        const { name, description, type, subType, image } = this.state;
+        const { name, introduction, descriptionsArray, type, subType, image } = this.state;
         let typeRef = "";
         if(type===1) 
             typeRef = "Creation";
@@ -211,7 +237,7 @@ class AddPost extends React.Component {
 
         if(
             _.isEmpty(name) ||
-            _.isEmpty(description) ||
+            _.isEmpty(introduction) ||
             _.isEmpty(typeRef) ||
             _.isEmpty(subType)
         )
@@ -219,7 +245,8 @@ class AddPost extends React.Component {
         else {
             axios.put('/api/cardPost/create', {
                 name,
-                description,
+                introduction,
+                descriptionsArray,
                 typeRef,
                 subType,
                 image,
@@ -325,19 +352,63 @@ class AddPost extends React.Component {
                     </Grid>
                     <Grid item xs className={classes.normalGrid}>
                         <Typography>
-                            Description:
+                            Introduction:
                         </Typography>
                         <TextField
-                            className={classes.descriptionField}
+                            className={classes.formcontrol}
                             required
-                            id="Description"
+                            id="Introduction"
                             label="Required"
-                            placeholder="Describe what your post is about..."
+                            placeholder="Describe generally what your post is about..."
                             variant="outlined"
                             multiline
-                            rows={10}
-                            onChange={this.handleDescription}
+                            rows={3}
+                            onChange={this.handleIntroduction}
                         />
+                    </Grid>
+                    <Grid item xs className={classes.normalGrid}>
+                        <Typography gutterBottom>
+                            Descriptions (Optional): 
+                        </Typography>
+                        <Grid
+                            spacing={4} 
+                            direction="column" 
+                            container
+                        >
+                            {
+                                this.state.descriptionsArray.map(description => (
+                                    <Grid 
+                                        key={description.index}
+                                        item 
+                                        container 
+                                        spacing={2} 
+                                        direction="column"
+                                    >
+                                        <DescriptionBlock
+                                            description={description} 
+                                            index={description.index}
+                                            remove={this.removeDescription}
+                                            saveEachDescription={this.saveEachDescription}
+                                        />
+                                        <Divider className={classes.divider}/>
+                                    </Grid>
+                                ))
+                            }
+                            <Grid item xs>
+                                <Typography>
+                                    Number of descriptions: {this.state.descriptionsArray.length}
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={4}>
+                                <Button
+                                    variant="outlined"
+                                    color="primary"
+                                    onClick={this.addDescription}
+                                >
+                                    Add a description
+                                </Button>
+                            </Grid>
+                        </Grid>
                     </Grid>
                     <Grid item xs>
                         <Typography>
@@ -415,7 +486,7 @@ class AddPost extends React.Component {
                     </Grid>
                     <Grid item xs className={classes.normalGrid}>
                         <Typography>
-                            Download Link
+                            Download Link (Optional):
                         </Typography>
                         <TextField
                             id="Download Link"
@@ -425,7 +496,7 @@ class AddPost extends React.Component {
                     </Grid>
                     <Grid item xs className={classes.normalGrid}>
                         <Typography>
-                            Video
+                            Video (Optional):
                         </Typography>
                         <TextField
                             id="Video"
