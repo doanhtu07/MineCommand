@@ -1,4 +1,5 @@
 import React from 'react';
+import Link from '../src/Link';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import { Divider } from '@material-ui/core';
@@ -96,7 +97,8 @@ const useStyles = makeStyles(theme => ({
     imageMedia: {
         height: 'fit-content',
         maxHeight: 125,
-        objectFit: 'scale-down',
+        objectFit: 'cover',
+        width:'100%'
     },
     content: {
         paddingLeft: 16,
@@ -124,7 +126,9 @@ export default function ProfilePost(props) {
 
     return (
         <Card className={classes.card}>
-            <CardActionArea className={classes.cardAction}>
+            <CardActionArea className={classes.cardAction}
+                href={`/postPage?id=${cardInfo.id}`}
+            >
                 <div className={classes.div}>
                     <img 
                         title={cardInfo.name}

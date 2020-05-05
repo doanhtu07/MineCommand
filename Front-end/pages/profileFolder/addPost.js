@@ -14,6 +14,7 @@ import Input from '@material-ui/core/Input';
 import Chip from '@material-ui/core/Chip';
 import MenuItem from '@material-ui/core/MenuItem';
 import Button from '@material-ui/core/Button';
+import InputBase from '@material-ui/core/InputBase';
 import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
@@ -41,7 +42,7 @@ const styles = theme => ({
     },
     img: {
         width: '100%',
-        height: 400,
+        height: 350,
         objectFit: 'scale-down'
     },
     buttonBaseUpload: {
@@ -130,18 +131,19 @@ class AddPost extends React.Component {
             user: {},
             image: {},
 
-            name: "",
-            introduction: "",
-            description: "",
             type: "",
             subType: [],
-            descriptionsArray: [{index: 0}],
+            descriptionsArray: [{ index: 0 }],
+
+            descriptionIdAvailable: 1,
 
             error: "",
             backDrop: false,
             snackBar: false,
             snackBarTitle: "",
             alertSeverity: "",
+
+            keysPressed: {},
         };
     }
 
@@ -162,22 +164,69 @@ class AddPost extends React.Component {
         'Furniture',
     ]
 
+    hotkeys = [
+        'Control',
+        'Meta',
+        'Enter'
+    ]
+
+    name = ""
+    introduction = ""
+
+    handleKeyDown = (event) => {
+        if(this.hotkeys.indexOf(event.key)>=0) {
+            event.persist();
+            let temp = this.state.keysPressed;
+            temp[event.key] = true;
+
+            this.setState({ keysPressed: temp }, () => {
+                if (
+                    (this.state.keysPressed['Control'] || this.state.keysPressed['Meta'])
+                    && event.key === 'Enter'
+                ) {
+                    this.addDescription();
+                }
+            });
+        }
+    }
+
+    handleKeyUp = (event) => {
+        if(this.hotkeys.indexOf(event.key)>=0) {
+            this.setState({ keysPressed: {} });
+        }
+    }
+
     saveEachDescription = (attributes) => {
         let temp = this.state.descriptionsArray;
-        temp[attributes.index] = attributes;
+
+        let position = temp.map((e) => { 
+            return e.index; 
+        }).indexOf(attributes.index); 
+
+        temp[position] = attributes;
         this.setState({ descriptionsArray: temp });
     }
 
     addDescription = () => {
         let temp = this.state.descriptionsArray;
-        temp.push({index: temp.length});
-        this.setState({ descriptionsArray: temp });
+        temp.push({index: this.state.descriptionIdAvailable}); 
+        this.setState({ 
+            descriptionsArray: temp,
+            descriptionIdAvailable: this.state.descriptionIdAvailable + 1 
+        });
     }
 
     removeDescription = (index) => {
         let temp = this.state.descriptionsArray;
-        temp.splice(index, 1);
-        this.setState({ descriptionsArray: temp });
+
+        if(temp.length>1) {
+            let position = temp.map((e) => { 
+                return e.index; 
+            }).indexOf(index); 
+
+            temp.splice(position, 1);
+            this.setState({ descriptionsArray: temp });
+        }
     }
 
     changeImageUrl = (imageUrl) => {
@@ -208,15 +257,11 @@ class AddPost extends React.Component {
     }
 
     handleName = (event) => {
-        this.setState({ name: event.target.value });
+        this.name = event.target.value;
     }
 
     handleIntroduction = (event) => {
-        this.setState({ introduction: event.target.value });
-    }
-
-    handleDescription = (event) => {
-        this.setState({ description: event.target.value });
+        this.introduction = event.target.value;
     }
 
     handleType = (event) => {
@@ -228,7 +273,7 @@ class AddPost extends React.Component {
     };
 
     handleSubmit = () => {
-        const { name, introduction, descriptionsArray, type, subType, image } = this.state;
+        const { descriptionsArray, type, subType, image } = this.state;
         let typeRef = "";
         if(type===1) 
             typeRef = "Creation";
@@ -236,16 +281,16 @@ class AddPost extends React.Component {
             typeRef = "Challenge";
 
         if(
-            _.isEmpty(name) ||
-            _.isEmpty(introduction) ||
+            _.isEmpty(this.name) ||
+            _.isEmpty(this.introduction) ||
             _.isEmpty(typeRef) ||
             _.isEmpty(subType)
         )
             this.setState({ error: "You forget to fill in some required fields." });
         else {
             axios.put('/api/cardPost/create', {
-                name,
-                introduction,
+                name: this.name,
+                introduction: this.introduction,
                 descriptionsArray,
                 typeRef,
                 subType,
@@ -253,7 +298,8 @@ class AddPost extends React.Component {
                 authorId: this.state.user.id,
             })
             .then(res => {
-                Router.push('/profileEdit/myProfile');
+                this.openSnackBar("success", "post");
+                Router.push('/');
             })
             .catch(err => {
                 console.log(err);
@@ -262,22 +308,19 @@ class AddPost extends React.Component {
     }
 
     componentCheck = () => {
+        this.context.getUser()
+        .then(user => {
+            if(_.isEmpty(user.data)) {
+                Router.push('/');
+                return;
+            }
 
-        if (!_.isEmpty(this.context.user)) {
-            if(!_.isEqual(this.state.user, this.context.user)) {
+            if(!_.isEqual(this.state.user, user.data)) {
                 this.setState({ 
-                    user: this.context.user,
+                    user: user.data,
                 });
             }
-        }
-
-        else {
-            Router.push('/');
-        }
-    }
-
-    componentDidMount() {
-
+        })
     }
 
     componentDidUpdate() {
@@ -339,22 +382,28 @@ class AddPost extends React.Component {
                     </Grid>
                     <Grid item xs className={classes.normalGrid}>
                         <Typography>
-                            Name:
+                            Name (required):
                         </Typography>
-                        <TextField
+                        <InputBase
                             required
                             id="Name"
                             label="Required"
-                            placeholder="Enter your post's name..."
+                            placeholder="Enter your post's name"
                             variant="outlined"
+                            inputProps={{
+                                style: {
+                                    fontSize: 'x-large',
+                                    fontWeight: 'bold'
+                                }
+                            }}
                             onChange={this.handleName}
                         />
                     </Grid>
                     <Grid item xs className={classes.normalGrid}>
                         <Typography>
-                            Introduction:
+                            Introduction (required):
                         </Typography>
-                        <TextField
+                        <InputBase
                             className={classes.formcontrol}
                             required
                             id="Introduction"
@@ -366,7 +415,10 @@ class AddPost extends React.Component {
                             onChange={this.handleIntroduction}
                         />
                     </Grid>
-                    <Grid item xs className={classes.normalGrid}>
+                    <Grid item xs className={classes.normalGrid}
+                        onKeyDown={this.handleKeyDown}
+                        onKeyUp={this.handleKeyUp}
+                    >
                         <Typography gutterBottom>
                             Descriptions (Optional): 
                         </Typography>
@@ -389,6 +441,7 @@ class AddPost extends React.Component {
                                             index={description.index}
                                             remove={this.removeDescription}
                                             saveEachDescription={this.saveEachDescription}
+                                            disabled={this.state.descriptionsArray.length===1}
                                         />
                                         <Divider className={classes.divider}/>
                                     </Grid>

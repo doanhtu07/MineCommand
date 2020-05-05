@@ -22,6 +22,7 @@
     "react-custom-scrollbars": "^4.2.1",
     "react-dev-utils": "^10.2.1",
     "react-dom": "latest",
+    "react-hotkeys": "^2.0.0",
     "react-popper": "^2.2.2",
     "react-router": "^5.1.2",
     "react-router-dom": "^5.1.2",

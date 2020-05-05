@@ -150,13 +150,11 @@ router.put('/updateAvatar', (req, res) => {
         return storage.child(fileRef.metadata.fullPath).getDownloadURL()
     })
     .then(photoURL => {
-        const date = new Date();
         return prisma.user.update({
             where: {
                 id: userId
             },
             data: {
-                updatedAt: date,
                 avatarUrl: photoURL
             }
         })

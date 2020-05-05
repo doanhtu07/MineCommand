@@ -90,6 +90,7 @@ class MyProfile extends React.Component {
                 params: {
                     authorId: this.context.user.id,
                     count,
+                    page: 1               
                 }
             })
             .then(posts => {
@@ -102,38 +103,42 @@ class MyProfile extends React.Component {
     }
 
     componentCheck = () => {
+        this.context.getUser()
+        .then(user => {
+            if(_.isEmpty(user.data)) {
+                Router.push('/');
+                return;
+            }
 
-        if (!_.isEmpty(this.context.user)) {
-            if(!_.isEqual(this.state.user, this.context.user)) {
+            if(!_.isEqual(this.state.user, user.data)) {
                 this.setState({ 
-                    user: this.context.user,
+                    user: user.data,
                 });
             }
-        }
-
-        else {
-            Router.push('/');
-        }
+        })
     }
 
     componentDidMount() {
-        this.getPosts(4)
-        .then(posts => {
-            this.setState({
-                posts: posts.data
+        this.context.getUser()
+        .then(user => {
+            if(_.isEmpty(user.data)) {
+                return;
+            }
+    
+            this.getPosts(4)
+            .then(posts => {
+                this.setState({
+                    posts: posts.data
+                })
             })
+            .catch(err => {
+                console.log(err);
+            });
         })
-        .catch(err => {
-            console.log(err);
-        });
     }
 
     componentDidUpdate() {
         this.componentCheck();
-    }
-
-    componentWillUnmount = () => {
-
     }
 
     render() {
@@ -188,8 +193,10 @@ class MyProfile extends React.Component {
                     </Grid>
                     {
                         !_.isEmpty(this.state.posts) &&
-                        <Grid item xs={12} className={classes.seeMore}>
-                            <Button>
+                        <Grid item xs={12} 
+                            className={classes.seeMore}
+                        >
+                            <Button component={Link} href="/profileFolder/myPosts">
                                 See More
                             </Button>
                         </Grid>

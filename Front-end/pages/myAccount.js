@@ -219,16 +219,17 @@ class MyAccount extends React.Component {
     }
 
     componentCheck = () => {
-        if (!_.isEmpty(this.context.user)) {
-            if(!_.isEqual(this.state.user, this.context.user))
+        this.context.getUser()
+        .then(user => {
+            if(_.isEmpty(user.data)) {
+                Router.push('/');
+                return;
+            }
+            if(!_.isEqual(this.state.user, user.data))
                 this.setState({ 
-                    user: this.context.user,
+                    user: user.data,
                 });
-        }
-
-        else {
-            Router.push('/');
-        }
+        })
     }
 
     componentDidMount() {

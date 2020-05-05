@@ -13,7 +13,6 @@ router.put('/update', (req, res) => {
     if(type==="name") {
         dataPrisma = {
             name: req.body.name,
-            updatedAt: new Date()
         };
         dataAlgolia = {
             objectID: req.body.id,
@@ -23,7 +22,6 @@ router.put('/update', (req, res) => {
     if(type==="password") {
         dataPrisma = {
             password: req.body.password,
-            updatedAt: new Date()
         };
         dataAlgolia = {
             objectID: req.body.id,

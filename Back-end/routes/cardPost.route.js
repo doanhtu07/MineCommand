@@ -5,6 +5,61 @@ const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 const { indices } = require('../algolia');
 
+router.get('/getById', (req, res) => {
+    const { id } = req.query;
+    prisma.post.findOne({
+        where: {
+            id,
+        },
+        include: {
+            author: true,
+            descriptions: true,
+        },
+    })
+    .then(post => {
+        res.send(post);
+    })
+    .catch(err => {
+        console.log(err);
+    })
+});
+
+router.delete('/delete', (req, res) => {
+    const { postId, postDescriptions } = req.query;
+
+    let descriptionsPromise = postDescriptions.map(
+        item => new Promise((resolve, reject) => {
+            let itemJSON = JSON.parse(item);
+            prisma.description.delete({
+                where: {
+                    id: itemJSON.id
+                }
+            })
+            .then(result => {
+                resolve(result);
+            })
+            .catch(err => {
+                reject(err);
+            })
+        })
+    );
+
+    Promise.all(descriptionsPromise)
+    .then(() => {
+        return prisma.post.delete({
+            where: {
+                id: postId
+            },
+        })
+    })
+    .then(result => {
+        res.send(result);
+    })
+    .catch(err => {
+        console.log(err);
+    })
+});
+
 router.put('/create', (req, res) => {
     const { name, introduction, descriptionsArray, typeRef, subType, image, authorId } = req.body;
     let descriptions = [];
@@ -22,16 +77,6 @@ router.put('/create', (req, res) => {
     );
 
     Promise.all(descriptionsPromise)
-    .then(() => {
-        return prisma.user.update({
-            where: {
-                id: authorId
-            },
-            data: {
-                updatedAt: new Date()
-            }
-        })
-    })
     .then(() => {
         return prisma.post.create({
             data: {
@@ -130,18 +175,35 @@ router.get('/getLatestEdit', (req, res) => {
     })
 });
 
+//User section
 router.get('/getPostsOfUser', (req, res) => {
     prisma.post.findMany({
         where: {
             authorId: req.query.authorId 
         },
         orderBy: {
-            createdAt: 'desc'
+            updatedAt: 'desc'
         },
+        skip: (req.query.page-1)*req.query.count,
         first: parseInt(req.query.count, 10),
     })
     .then(posts => {
         res.send(posts);
+    })
+    .catch(err => {
+        console.log(err);
+    })
+});
+
+router.get('/getNumberOfUserPosts', (req, res) => {
+    const { authorId } = req.query;
+    prisma.post.findMany({
+        where: {
+            authorId
+        },
+    })
+    .then(result => {
+        res.send(String(result.length));
     })
     .catch(err => {
         console.log(err);

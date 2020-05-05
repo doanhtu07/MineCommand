@@ -86,11 +86,11 @@ class Index extends React.Component {
   };
 
   getPage = (page) => {
-    this.getMaxPage(21);
+    this.getMaxPage(16);
     axios.get('/api/cardPost/getLatestCreate', {
       params: {
         Page: page,
-        numItems: 21
+        numItems: 16
       }
     })
     .then(res => {
@@ -109,7 +109,7 @@ class Index extends React.Component {
     axios.get('/api/cardPost/getLatestCreateWithSearch', {
       params: {
         Page: page,
-        numItems: 21,
+        numItems: 16,
         search
       }
     })

@@ -29,7 +29,9 @@ class UserProvider extends React.Component {
         this.getUser()
         .then(user => {
             if(!_.isEqual(this.state.user, user.data))
-                this.setState({ user: user.data });
+                this.setState({ 
+                    user: user.data
+                });
         })
         .catch(err => {
             console.log(err);
@@ -55,8 +57,11 @@ class UserProvider extends React.Component {
     }
 
     logoutUser = () => {
-        this.setState({ user: {}, photos: [], totalPhotos: 0 })
+        this.setState({ 
+            user: {},
+        });
         axios.get('/api/logout');
+        Router.push('/');
     }
 
     loginUser = (typeLogin, credentials) => {
@@ -142,9 +147,7 @@ class UserProvider extends React.Component {
             <context.Provider 
                 value={{
                     user: this.state.user,
-                    photos: this.state.photos,
-                    totalPhotos: this.state.totalPhotos,
-                    getUserPhotos: this.getUserPhotos,
+                    getUser: this.getUser,
                     logoutUser: this.logoutUser,
                     loginUser: this.loginUser,
                     signupUser: this.signupUser,

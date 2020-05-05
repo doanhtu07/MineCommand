@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import axios from 'axios';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import Backdrop from '@material-ui/core/Backdrop';
@@ -12,6 +12,8 @@ import MuiAlert from '@material-ui/lab/Alert';
 import Snackbar from '@material-ui/core/Snackbar';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import InputBase from '@material-ui/core/InputBase';
+import Typography from '@material-ui/core/Typography';
 import UploadPhotoBackDrop from './uploadPhotoBackDrop.js';
 import UserProvider from '../../contexts/UserProvider';
 import { ButtonBase } from '@material-ui/core';
@@ -20,16 +22,23 @@ const styles = theme => ({
     hide: {
         display: 'none'
     },
-    textField: {
-        width: '50%',
+    textField100: {
+        width: '100%',
     },
-    photoButton: {
+    photoButton50: {
         width: '50%',
         height: '100%',
-        minHeight: 200
+        minHeight: 200,
+        minWidth: 200,
+    },
+    photoButton100: {
+        width: '100%',
+        height: '100%',
+        minHeight: 200,
+        minWidth: 200,
     },
     textPhoto: {
-        padding: 10,
+        padding: 5,
         width: '100%',
         display: 'flex',
         justifyContent: 'flex-start',
@@ -46,12 +55,26 @@ const styles = theme => ({
         color: '#fff',
     },
     image: {
-        height: 200,
         objectFit: 'scale-down'
     },
     addPhoto: {
         display: 'flex',
         justifyContent: 'center',
+        alignItems: 'center',
+    },
+    addPhotoGrid: {
+        display: 'flex',
+        justifyContent: 'center',
+        maxWidth: 'fit-content'
+    },
+    imageButton: {
+        maxWidth: 'fit-content',
+    },
+    titleAndDescription: {
+        width: '100%'
+    },
+    title: {
+        maxHeight: 'fit-content'
     },
 });
 
@@ -64,10 +87,7 @@ class DescriptionBlock extends React.Component {
         super(props);
         this.state = {
             index: 0,
-            title: "",
-            description: "",
             imageUrl: "",
-            phototext: "",
             layoutName: "left",
 
             error: "",
@@ -79,6 +99,10 @@ class DescriptionBlock extends React.Component {
             layout: null,
         };
     }
+
+    title = ""
+    description = ""
+    phototext = ""
 
     handleLayout = (layoutName) => {
         this.setState({ layoutName });
@@ -100,22 +124,22 @@ class DescriptionBlock extends React.Component {
         if(!_.isEqual(thisDescription, this.props.description))
             this.props.saveEachDescription({
                 index,
-                title,
-                description,
+                title: this.title,
+                description: this.description,
                 imageUrl,
-                phototext,
+                phototext: this.phototext,
                 layoutName
             });
     }
 
     handleTitle = (event) => {
-        this.setState({ title: event.target.value });
+        this.title=event.target.value;
     }
     handleDescription = (event) => {
-        this.setState({ description: event.target.value });
+        this.description=event.target.value;
     }
     handlePhototext = (event) => {
-        this.setState({ phototext: event.target.value} );
+        this.phototext=event.target.value;
     }
 
     handleCloseBackDrop = () => {
@@ -148,13 +172,9 @@ class DescriptionBlock extends React.Component {
         this.interval = setInterval(this.handleChange, 1500);
     }
 
-    componentDidUpdate() {
-        
+    componentWillUnmount() {
+        clearInterval(this.interval);
     }
-
-    // componentWillUnmount() {
-    //     clearInterval(this.interval);
-    // }
 
     render() {
         const { classes } = this.props;
@@ -188,6 +208,7 @@ class DescriptionBlock extends React.Component {
                         onClick={() => {
                             this.props.remove(this.props.index);
                         }}
+                        disabled={this.props.disabled}
                     >
                         Remove this description
                     </Button>
@@ -202,13 +223,19 @@ class DescriptionBlock extends React.Component {
                         'column'
                     } 
                     spacing={1}
+                    className={this.state.layoutName==="center"? classes.addPhoto:""}
                 >
-                    <Grid item xs container direction="column">
+                    <Grid item container direction="column"
+                        xs={this.state.layoutName==="center"? true:4}
+                        className={classes.addPhotoGrid}
+                    >
                         <Grid item xs className={classes.addPhoto}>
                             {   
                                 _.isEmpty(this.state.imageUrl) &&
                                 <Button 
-                                    className={classes.photoButton}
+                                    className={this.state.layoutName==="center"?
+                                        classes.photoButton50:classes.photoButton100
+                                    }
                                     variant="outlined"
                                     onClick={this.handleAddPhoto}
                                 >
@@ -217,48 +244,49 @@ class DescriptionBlock extends React.Component {
                             }
                             {
                                 !_.isEmpty(this.state.imageUrl) &&
-                                <Button onClick={this.handleAddPhoto}>
-                                    <img className={classes.image} src={this.state.imageUrl}/>
+                                <Button onClick={this.handleAddPhoto}
+                                    className={classes.imageButton}
+                                >
+                                    <img className={classes.image} src={this.state.imageUrl}
+                                        height={this.state.layoutName==="center"? 250:150}
+                                    />
                                 </Button>
                             }
                         </Grid>
                         <Grid item xs className={classes.textPhoto}>
-                            <TextField
+                            <InputBase
                                 onChange={this.handlePhototext}
-                                className={classes.textField}
+                                className={classes.textField100}
                                 inputProps={{
                                     style: {
-                                        fontSize: 'x-small',
+                                        fontSize: 'small',
                                     }
                                 }}
-                                size="small"
-                                id="Photo Text"
-                                placeholder="Describe your photo briefly..."
+                                placeholder="Describe photo..."
                             />
                         </Grid>
                     </Grid>
-                    <Grid item xs container direction="column" spacing={1}>
-                        <Grid item xs>
-                            <TextField
-                                onChange={this.handleTitle}
-                                fullWidth
+                    <Grid item xs container direction="column" spacing={1}
+                        className={classes.titleAndDescription}
+                    >
+                        <Grid item xs className={classes.title}>
+                            <InputBase
                                 inputProps={{
                                     style: {
                                         fontSize: 'x-large',
                                         fontWeight: 'bold'
                                     }
                                 }}
-                                id="Title"
-                                label="Title"
-                                placeholder="Enter a sub title..."
+                                placeholder="Enter title..."
+                                onChange={this.handleTitle}
+                                fullWidth
                             />
                         </Grid>
+                        <Divider/>
                         <Grid item xs>
-                            <TextField
+                            <InputBase
                                 onChange={this.handleDescription}
                                 fullWidth
-                                id="Description"
-                                label="Description"
                                 placeholder="Describe your post..."
                                 multiline
                                 rows={this.state.layoutName==="center"? 5:10}

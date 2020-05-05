@@ -351,9 +351,9 @@ export default function Layout(props) {
         setSearchButton(null);
     };
 
-    const [search, setSearch] = React.useState("");
+    let search = "";
     const handleChangeSearch = (event) => {
-        setSearch(event.target.value);
+        search=event.target.value;
     };
 
     const [avatar, setAvatar] = React.useState(null);
@@ -558,7 +558,7 @@ export default function Layout(props) {
                             !_.isEmpty(user) &&
                             <IconButton
                                 component={Link}
-                                href='/profileEdit/addPost'
+                                href='/profileFolder/addPost'
                                 className={classes.menuButton}
                                 classes={{
                                     label: classes.menuButtonLabel
@@ -592,7 +592,7 @@ export default function Layout(props) {
                                         </ListItemIcon>
                                         <ListItemText primary="My account" />
                                     </StyledMenuItem>
-                                    <StyledMenuItem component={Link} href="/profileEdit/myProfile">
+                                    <StyledMenuItem component={Link} href="/profileFolder/myProfile">
                                         <ListItemIcon>
                                             <AccountBoxRoundedIcon fontSize="small" />
                                         </ListItemIcon>
