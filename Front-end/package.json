@@ -11,7 +11,7 @@
     "clsx": "latest",
     "express": "^4.17.1",
     "http-proxy-middleware": "^0.20.0",
-    "lodash": "^4.17.19",
+    "lodash": "^4.17.21",
     "next": "latest",
     "next-images": "^1.4.0",
     "prop-types": "latest",
